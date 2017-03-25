@@ -1,10 +1,35 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
 
+var routerTable = {
+  '/blog': { sendFile: 'blog.html' },
+  '/blog/*': { sendFile: 'blog.html' },
+  '/console': { sendFile: 'console.html' },
+  '/console/login': { sendFile: 'login.html' },
+  '/console/*': { sendFile: 'console.html' },
+  '/': { redirect: '/blog' }
+}
+
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve(__dirname, '../dist/index.html'),
+    entries: {
+      blog: {
+        template: path.resolve(__dirname, '../src/templates/blog.template.html'),
+        entry: path.resolve(__dirname, '../src/entries/blog.js'),
+        filename: 'blog.html'
+      },
+      login: {
+        template: path.resolve(__dirname, '../src/templates/login.template.html'),
+        entry: path.resolve(__dirname, '../src/entries/login.js'),
+        filename: 'login.html'
+      },
+      console: {
+        template: path.resolve(__dirname, '../src/templates/console.template.html'),
+        entry: path.resolve(__dirname, '../src/entries/console.js'),
+        filename: 'console.html'
+      }
+    },
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -27,12 +52,20 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api': 'localhost:8081'
+    },
+    routerTable: routerTable,
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
     // In our experience, they generally work as expected,
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
+  },
+  publish: {
+    env: require('./prod.env'),
+    prot: 8080,
+    routerTable: routerTable,
   }
 }

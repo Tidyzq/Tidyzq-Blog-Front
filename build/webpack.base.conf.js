@@ -7,10 +7,14 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
+var entries = {}
+Object.keys(config.build.entries).forEach(function (key) {
+  var conf = config.build.entries[key]
+  entries[key] = conf.entry
+})
+
 module.exports = {
-  entry: {
-    app: './src/main.js'
-  },
+  entry: entries,
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
