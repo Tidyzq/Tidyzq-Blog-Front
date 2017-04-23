@@ -1,23 +1,110 @@
-<template>
-  <div id="app">
-    <img src="../assets/logo.png">
-    <router-view></router-view>
-  </div>
+<template lang='pug'>
+  .login-page
+    el-col.login-form-wrapper(:xs='22', :sm='16', :md='12', :lg='10')
+      el-form.login-form
+        el-form-item
+          el-input(placeholder='Username or E-mail', v-model='username')
+        el-form-item
+          el-input(type='password', placeholder='Password', v-model='password')
+        el-form-item.login-btn-wrapper
+          el-button.login-btn(nativeType='submit', type='primary', @click.prevent='OnSubmit') Login
+    particle.background
 </template>
 
 <script>
+import Particle from '@/components/Particle'
+import { mapActions } from 'vuex'
+
 export default {
-  name: 'app',
-};
+  components: {
+    Particle,
+  },
+  data () {
+    return {
+      username: '',
+      password: '',
+    }
+  },
+  created () {
+    this.readFromStorage()
+      .then(({ accessToken, currentUser }) => {
+        if (accessToken && currentUser) {
+          // TODO check login
+          window.location.assign('/console')
+        }
+      })
+  },
+  methods: {
+    OnSubmit () {
+      this.login({
+        username: this.username,
+        password: this.password,
+      })
+      .then(() => {
+        this.saveToStorage(true) // save to sessionStorage
+      })
+      .catch(err => {
+        err = err ? (err.message || (err.body && err.body.error && err.body.error.message)) : 'Error'
+        this.$message({
+          message: err,
+          type: 'error',
+        })
+      })
+    },
+    ...mapActions([
+      'login',
+      'saveToStorage',
+      'readFromStorage',
+    ]),
+  },
+}
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
+
+</style>
+
+<style lang='less' scoped>
+@import "../less/variables.less";
+
+.login-page {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.login-form-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-form {
+  background: lighten(@color-grey, 10%);
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.login-btn-wrapper {
+  margin: 0;
+}
+
+.login-btn {
+  width: 100%;
+}
+
+.background {
+  background: @color-blue;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
 </style>

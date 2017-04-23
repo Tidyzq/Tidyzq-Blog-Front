@@ -48,12 +48,12 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8080,
+    port: 8081,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': 'localhost:8081'
+      '/api': 'http://localhost:3000',
     },
     routerTable: routerTable,
     // CSS Sourcemaps off by default because relative paths are "buggy"
@@ -65,7 +65,7 @@ module.exports = {
   },
   publish: {
     env: require('./prod.env'),
-    prot: 8080,
+    prot: 8081,
     routerTable: routerTable,
   }
 }

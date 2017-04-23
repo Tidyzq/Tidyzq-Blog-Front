@@ -32,6 +32,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /particles\.js/,
+        loader: 'exports-loader?particlesJS=window.particlesJS,pJSDom=window.pJSDom'
+      },
+      {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: "pre",
