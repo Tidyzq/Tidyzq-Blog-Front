@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
+import Home from '@/views/Console/Home'
+import Documents from '@/views/Console/Documents'
 
 Vue.use(Router)
 
@@ -10,8 +11,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello,
+      name: 'Home',
+      component: Home,
+    }, {
+      path: '/documents',
+      name: 'Documents',
+      component: Documents,
     },
     { path: '*', redirect: '/' },
   ],

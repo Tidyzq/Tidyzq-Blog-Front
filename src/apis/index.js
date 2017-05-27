@@ -6,12 +6,12 @@ Vue.use(VueResource)
 Vue.http.interceptors.push((request, next) => {
   const store = require('@/store').default
   if (store.state.accessToken) {
-    request.headers.set('Authorization', `Bearer ${store.state.accessToken.id}`)
+    request.headers.set('Authorization', store.state.accessToken.id)
   }
   next()
 })
 
-const User = Vue.resource('/api/users{/id}', {}, {
+export const User = Vue.resource('/api/users{/id}', {}, {
   login: {
     method: 'POST',
     url: '/api/users/login',
@@ -22,9 +22,4 @@ const User = Vue.resource('/api/users{/id}', {}, {
   },
 })
 
-const Document = Vue.resource('/api/documents{/id}')
-
-export default {
-  User,
-  Document,
-}
+export const Document = Vue.resource('/api/documents{/id}')

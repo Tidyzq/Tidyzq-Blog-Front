@@ -42,6 +42,7 @@ export default {
       })
       .then(() => {
         this.saveToStorage(true) // save to sessionStorage
+        window.location.assign('/console')
       })
       .catch(err => {
         err = err ? (err.message || (err.body && err.body.error && err.body.error.message)) : 'Error'

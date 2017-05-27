@@ -1,8 +1,8 @@
-import Apis from '@/apis'
+import { User } from '@/apis'
 import * as storage from './storage'
 
 export function login ({ commit, dispatch }, user) {
-  return Apis.User.login({
+  return User.login({
     include: 'user',
   }, {
     username: user.username,
@@ -21,7 +21,7 @@ export function login ({ commit, dispatch }, user) {
 }
 
 export function logout ({ commit }) {
-  return Apis.User.logout()
+  return User.logout()
   .then(() => {
     commit('REMOVE_ACCESS_TOKEN')
     commit('REMOVE_CURRENT_USER')
