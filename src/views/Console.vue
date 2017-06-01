@@ -1,7 +1,9 @@
 <template lang='pug'>
 .console-page
   side-menu.sidebar(:menus='Menus', @select='onSelect')
-  router-view.main-content
+  .main-content
+    topbar
+    router-view.secondary-content
 </template>
 
 <script>
@@ -98,6 +100,11 @@ html, body {
   flex-direction: column;
   align-content: stretch;
   position: relative;
+}
+
+.secondary-content {
+  height: 100%;
+  width: 100%;
 }
 
 .sidebar {

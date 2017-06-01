@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-default/index.css'
 
 import SideMenu from '@/components/SideMenu'
 import Topbar from '@/components/Topbar'
+import TopbarItem from '@/components/TopbarItem'
 
 Vue.config.productionTip = false
 
@@ -16,6 +17,7 @@ Vue.use(ElementUI)
 
 Vue.component('side-menu', SideMenu)
 Vue.component('topbar', Topbar)
+Vue.component('topbar-item', TopbarItem)
 
 /* eslint-disable no-new */
 new Vue({

@@ -1,6 +1,5 @@
 <template lang='pug'>
 .home-page
-  topbar
   article
 </template>
 
