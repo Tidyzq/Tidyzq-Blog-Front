@@ -9,6 +9,7 @@
 <script>
 import { mapActions } from 'vuex'
 import SideMenuEvent from '@/event-buses/SideMenu'
+import AuthorizationEvent from '@/event-buses/Authorization'
 
 export default {
   data () {
@@ -17,9 +18,12 @@ export default {
     }
   },
   created () {
+    AuthorizationEvent.$on('failed', () => {
+      this.OnAuthFail()
+    })
     this.checkLogin()
       .catch(() => {
-        window.location.assign('/console/login')
+        AuthorizationEvent.$emit('failed')
       })
     SideMenuEvent.$on('toggle', () => {
       this.openSidebar = !this.openSidebar
@@ -37,6 +41,9 @@ export default {
     ]),
     OnClickMainContent () {
       SideMenuEvent.$emit('close')
+    },
+    OnAuthFail () {
+      window.location.assign('/console/login')
     },
   },
 }

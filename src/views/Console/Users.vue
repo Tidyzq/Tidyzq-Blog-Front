@@ -3,20 +3,18 @@
     'show-list': !showDetail,
     'show-detail': showDetail
   }`)
-  topbar-item(to='topbar')
-    p
+  template(v-if='!showDetail')
+    portal(to='topbar')
       span Users
-      span(v-if='userId') {{ userId }}
-  topbar-item(to='topbarButtons')
-    el-button(v-if='showDetail', type='success', @click='OnSave') Save
-    el-button(v-else, type='primary') Create
+    portal(to='topbar-buttons')
+      el-button(type='primary') Create
   article
     .user-list
       .user-list-item(v-for='user in users', key='user.id')
         router-link(:to=`{ name: 'UserDetail', params: { userId: user.id } }`)
           span {{ user.id }}
           span {{ user.username }}
-    router-view.user-detail(ref='userDetail')
+    router-view.user-detail
 </template>
 
 <script>
@@ -29,9 +27,6 @@ export default {
     }
   },
   computed: {
-    userId () {
-      return this.$route.params.userId
-    },
     showDetail () {
       return this.$route.name === 'UserDetail'
     },
@@ -45,9 +40,6 @@ export default {
       .then(({ body: users }) => {
         this.users = users
       })
-    },
-    OnSave () {
-      this.$refs.userDetail.$emit('save')
     },
   },
 }

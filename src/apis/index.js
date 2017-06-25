@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
+import AuthorizationEvent from '@/event-buses/Authorization'
 
 Vue.use(VueResource)
 
@@ -9,6 +10,14 @@ Vue.http.interceptors.push((request, next) => {
     request.headers.set('Authorization', `JWT ${store.state.accessToken}`)
   }
   next()
+})
+
+Vue.http.interceptors.push((request, next) => {
+  next(response => {
+    if (response.status === 401) {
+      AuthorizationEvent.$emit('failed')
+    }
+  })
 })
 
 export const Auth = Vue.resource('/api/auth', {}, {

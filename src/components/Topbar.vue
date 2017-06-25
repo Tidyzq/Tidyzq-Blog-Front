@@ -1,54 +1,15 @@
+<template lang='pug'>
+  header.topbar
+    button.topbar-toggle(type='button', @click='OnToggle')
+      i.fa.fa-2x.fa-bars
+    portal-target.topbar-body(name='topbar')
+    portal-target.topbar-buttons(name='topbar-buttons')
+</template>
+
 <script>
-import getTransport from '@/utils/transport'
 import SideMenuEvent from '@/event-buses/SideMenu'
 
-const transport = getTransport('topbar')
-
 export default {
-  data () {
-    return {
-      transport: transport.transport,
-    }
-  },
-  computed: {
-    defaultTransport () {
-      return this.transport.topbar || {}
-    },
-    defaultPassengers () {
-      return this.defaultTransport.passengers || []
-    },
-    buttonsTransport () {
-      return this.transport.topbarButtons || {}
-    },
-    buttonsPassengers () {
-      return this.buttonsTransport.passengers || []
-    },
-  },
-  render (h) {
-    return h('header', {
-      class: 'topbar',
-    }, [
-      h('button', {
-        attrs: {
-          type: 'button',
-        },
-        class: 'topbar-toggle',
-        on: {
-          click: this.OnToggle,
-        },
-      }, [
-        h('i', {
-          class: 'fa fa-2x fa-bars',
-        }),
-      ]),
-      h('div', {
-        class: 'topbar-body',
-      }, this.defaultPassengers),
-      h('div', {
-        class: 'topbar-buttons',
-      }, this.buttonsPassengers),
-    ])
-  },
   methods: {
     OnToggle (e) {
       SideMenuEvent.$emit('toggle')

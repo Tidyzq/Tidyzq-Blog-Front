@@ -1,5 +1,12 @@
 <template lang='pug'>
-.document-detail(v-html='html')
+.document-detail
+  portal(to='topbar')
+    span Documents
+    span {{ documentId }}
+  portal(to='topbar-buttons')
+    router-link(:to=`{ name: 'DocumentEditor', params: { documentId: documentId } }`)
+      el-button(type='primary') Edit
+  .preview(v-html='html')
 </template>
 
 <script>

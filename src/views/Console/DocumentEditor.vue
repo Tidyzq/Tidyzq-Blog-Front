@@ -1,8 +1,8 @@
 <template lang='pug'>
 .editor
-  topbar-item(to='topbar')
+  portal(to='topbar')
     el-input(v-model='document.title')
-  topbar-item(to='topbarButtons')
+  portal(to='topbar-buttons')
     el-button(type='success', @click='saveDocument') save
   textarea(ref='editor')
   div(ref='pre', v-html='html')

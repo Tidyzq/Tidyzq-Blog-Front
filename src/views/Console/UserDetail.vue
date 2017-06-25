@@ -1,8 +1,13 @@
 <template lang='pug'>
   .user-detail
+    portal(to='topbar')
+       span Users
+       span {{ userId }}
+    portal(to='topbar-buttons')
+      el-button(type='success', @click='onSave') Save
     el-form
       el-form-item(label='Avatar')
-        file-select(@input='OnSelectAvatar', accept='image/*')
+        file-select(@input='onSelectAvatar', accept='image/*')
           img(:src='upload.avatarDataUrl || user.avatar', width='100')
           el-button(slot='trigger', type='primary') 上传
       el-form-item(label='Username')
@@ -18,7 +23,7 @@
         el-input(v-model='pwd.newRpt', type='password')
       el-form-item
         div
-          el-button.block(type='danger', @click='OnChangePassword') Change Password
+          el-button.block(type='danger', @click='onChangePassword') Change Password
 </template>
 
 <script>
@@ -85,7 +90,7 @@ export default {
   created () {
     this.fetchData()
     this.$on('save', () => {
-      this.OnSave()
+      this.onSave()
     })
   },
   methods: {
@@ -95,7 +100,7 @@ export default {
           this.user = user
         })
     },
-    OnSelectAvatar (files) {
+    onSelectAvatar (files) {
       this.upload.avatar = files[0]
       const reader = new FileReader()
       reader.onload = ev => {
@@ -103,7 +108,7 @@ export default {
       }
       reader.readAsDataURL(files[0])
     },
-    OnSave () {
+    onSave () {
       Promise.resolve()
       .then(() => {
         return this.upload.avatar ? this.uploadAvatar() : null
@@ -113,9 +118,9 @@ export default {
         type: 'success',
         message: 'Update User Success',
       }))
-      .catch(err => this.OnError(err))
+      .catch(err => this.onError(err))
     },
-    OnChangePassword () {
+    onChangePassword () {
       this.$refs.pwdForm.validate(valid => {
         if (valid) {
           this.changePassword()
@@ -123,7 +128,7 @@ export default {
             type: 'success',
             message: 'Change password success!',
           }))
-          .catch(err => this.OnError(err))
+          .catch(err => this.onError(err))
         }
       })
     },
@@ -151,7 +156,7 @@ export default {
         newPassword: this.pwd.new,
       })
     },
-    OnError (err) {
+    onError (err) {
       err = err && err.body ? err.body : err
       this.$message({
         message: err,

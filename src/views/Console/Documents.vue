@@ -3,12 +3,12 @@
     'show-list': !showDetail,
     'show-detail': showDetail
   }`)
-  topbar-item(to='topbar')
-    span Documents
-    span(v-if='showDetail') {{ documentsMap[detailId] && documentsMap[detailId].title }}
-  topbar-item(to='topbarButtons')
-    el-button(v-if='showDetail', type='primary', @click='toEdit(detailId)') Edit
-    el-button(v-else, type='success', @click='toAdd') Add
+  template(v-if='!showDetail')
+    portal(to='topbar')
+      span Documents
+    portal(to='topbar-buttons')
+      router-link(:to=`{ name: 'DocumentEditorNew' }`)
+        el-button(type='success') Add
   article
     .document-list
       router-link.document-item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)
@@ -18,13 +18,15 @@
           span.document-type.document-type-page(v-else) Page
           span.document-title {{ document.title }}
         .document-item-detail
-          span.document-author {{ document.author }}
-          span.document-created {{ document.createdAt }}
+          span.document-author {{ document.author.username }}
+          span.document-created {{ document.createdAt | fromNow }}
     router-view.document-detail
 </template>
 
 <script>
-import { Document } from '@/apis/index'
+import { User, Document } from '@/apis/index'
+import Moment from 'moment'
+import { Observable } from 'rxjs'
 
 export default {
   data () {
@@ -36,26 +38,26 @@ export default {
     showDetail () {
       return this.$route.name === 'DocumentDetail'
     },
-    detailId () {
-      return this.$route.params.id
-    },
-    documentsMap () {
-      const map = {}
-      for(const document of this.documents) {
-        map[document.id] = document
-      }
-      return map
-    },
   },
   created () {
     this.fetchData()
   },
+  mounted () {
+    Observable.interval(1000).subscribe(() => {
+      this.$forceUpdate()
+    })
+  },
   methods: {
     fetchData () {
-      Document.get({
-        filter: { include: 'author' },
-      })
-        .then(({ body: documents }) => {
+      Observable.fromPromise(Document.get())
+        .pluck('body')
+        .concatMap(documents => Observable.from(documents))
+        .map(document =>
+          Observable.fromPromise(User.get({ userId: document.author })).pluck('body')
+            .map(author => Object.assign(document, { author }))
+        )
+        .combineAll()
+        .subscribe(documents => {
           this.documents = documents
         })
     },
@@ -73,26 +75,32 @@ export default {
       })
     },
   },
+  filters: {
+    fromNow (value) {
+      return Moment(value).fromNow()
+    },
+  },
 }
 </script>
 
 <style scoped>
 article {
+  position: absolute;
+  width: 100%;
   height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
 
 .document-list, .document-detail {
-  height: 100%;
-  display: inline-block;
-  vertical-align: top;
-  width: 50%;
+  width: 100%;
+  flex: auto;
+  overflow: hidden;
 }
 
 @media only screen and (max-width: 991px) {
-  .show-detail .document-detail, .show-list .document-list {
-    width: 100%;
-  }
-
   .show-detail .document-list, .show-list .document-detail {
     display: none;
   }
