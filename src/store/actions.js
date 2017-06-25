@@ -1,36 +1,48 @@
-import { User } from '@/apis'
+import { Auth } from '@/apis'
 import * as storage from './storage'
 
-export function login ({ commit, dispatch }, user) {
-  return User.login({
-    include: 'user',
-  }, {
-    username: user.username,
+export function login ({ commit, dispatch }, user, toSession) {
+  return Auth.login({
+    email: user.email,
     password: user.password,
   })
-  .then(({ body }) => {
-    const accessToken = {
-      id: body.id,
-      created: body.created,
-      ttl: body.ttl,
-    }
-    const currentUser = body.user
+  .then(({ body: { accessToken, user: currentUser } }) => {
     commit('UPDATE_ACCESS_TOKEN', accessToken)
     commit('UPDATE_CURRENT_USER', currentUser)
   })
+  .then(() => dispatch('saveToStorage', toSession))
 }
 
-export function logout ({ commit }) {
-  return User.logout()
-  .then(() => {
-    commit('REMOVE_ACCESS_TOKEN')
-    commit('REMOVE_CURRENT_USER')
-  })
+export function logout ({ commit, dispatch }) {
+  commit('REMOVE_ACCESS_TOKEN')
+  commit('REMOVE_CURRENT_USER')
+  return dispatch('saveToStorage')
 }
 
-export function saveToStorage ({ state }, toSession) {
-  storage.set('accessToken', state.accessToken, toSession)
-  storage.set('currentUser', state.currentUser, toSession)
+export function checkLogin ({ state, dispatch }) {
+  return dispatch('readFromStorage')
+    .then(() => {
+      if (!state.accessToken) {
+        throw new Error('not login')
+      } else {
+        return Auth.checkLogin()
+          .catch(err => {
+            return dispatch('logout')
+              .then(() => { throw err })
+          })
+      }
+    })
+}
+
+export function saveToStorage ({ state: { accessToken, currentUser} }, toSession) {
+  if (accessToken && currentUser) {
+    storage.set('accessToken', accessToken, toSession)
+    storage.set('currentUser', currentUser, toSession)
+  } else {
+    storage.remove('accessToken')
+    storage.remove('currentUser')
+  }
+  return Promise.resolve()
 }
 
 export function readFromStorage ({ commit }) {

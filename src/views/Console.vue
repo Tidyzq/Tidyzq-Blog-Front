@@ -1,48 +1,42 @@
 <template lang='pug'>
 .console-page
-  side-menu.sidebar(:menus='Menus', @select='onSelect')
-  .main-content
-    topbar
+  side-menu.sidebar(:class=`{ open: openSidebar }`)
+  .main-content(@click='OnClickMainContent')
+    topbar.topbar
     router-view.secondary-content
 </template>
 
 <script>
 import { mapActions } from 'vuex'
-
-const Menus = [{
-  name: 'Users',
-  icon: 'menu',
-  index: 'Users',
-}, {
-  name: 'Documents',
-  icon: 'menu',
-  index: 'Documents',
-}]
+import SideMenuEvent from '@/event-buses/SideMenu'
 
 export default {
   data () {
     return {
-      Menus,
+      openSidebar: false,
     }
   },
   created () {
-    this.readFromStorage()
-      .then(({ accessToken, currentUser }) => {
-        if (!accessToken || !currentUser) {
-          // TODO check login
-          this.gotoLogin()
-        }
+    this.checkLogin()
+      .catch(() => {
+        window.location.assign('/console/login')
       })
+    SideMenuEvent.$on('toggle', () => {
+      this.openSidebar = !this.openSidebar
+    })
+    SideMenuEvent.$on('open', () => {
+      this.openSidebar = true
+    })
+    SideMenuEvent.$on('close', () => {
+      this.openSidebar = false
+    })
   },
   methods: {
     ...mapActions([
-      'readFromStorage',
+      'checkLogin',
     ]),
-    gotoLogin () {
-      window.location.assign('/console/login')
-    },
-    onSelect (index) {
-      this.$router.push({ name: index })
+    OnClickMainContent () {
+      SideMenuEvent.$emit('close')
     },
   },
 }
@@ -86,9 +80,19 @@ html, body {
   display: inline-block;
 }
 
-@media only screen and (min-width: 768px) {
-  .brand {
-    display: inline-block;
+/* xs */
+@media only screen and (max-width: 767px) {
+  .sidebar {
+    z-index: 600;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: none;
   }
 }
 
@@ -102,19 +106,20 @@ html, body {
   position: relative;
 }
 
+.topbar {
+  flex: none;
+}
+
 .secondary-content {
-  height: 100%;
-  width: 100%;
+  position: relative;
+  flex: auto;
+  overflow: hidden;
 }
 
 .sidebar {
   flex: none;
-  width: 16rem;
-}
-
-.body {
-  flex: auto;
-  /*background: grey;*/
+  transition: transform .3s linear;
+  /*width: 16rem;*/
 }
 
 </style>

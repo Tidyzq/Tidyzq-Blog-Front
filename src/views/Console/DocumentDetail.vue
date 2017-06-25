@@ -13,15 +13,15 @@ export default {
     }
   },
   computed: {
-    id () {
-      return this.$route.params.id
+    documentId () {
+      return this.$route.params.documentId
     },
     html () {
       return Markdown.render(this.markdown)
     },
   },
   watch: {
-    id () {
+    documentId () {
       this.fetchData()
     },
   },
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     fetchData () {
-      Document.get({ id: this.id})
+      Document.get({ documentId: this.documentId })
         .then(({ body: { markdown } }) => {
           this.markdown = markdown
         })

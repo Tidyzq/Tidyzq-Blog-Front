@@ -4,7 +4,7 @@
     el-input(v-model='document.title')
   topbar-item(to='topbarButtons')
     el-button(type='success', @click='saveDocument') save
-  textarea(ref='editor', v-model='document.markdown')
+  textarea(ref='editor')
   div(ref='pre', v-html='html')
 </template>
 
@@ -22,8 +22,8 @@ export default {
     }
   },
   computed: {
-    id () {
-      return this.$route.params.id
+    documentId () {
+      return this.$route.params.documentId
     },
     html () {
       return Markdown.render(this.document.markdown || '')
@@ -46,19 +46,25 @@ export default {
   },
   methods: {
     fetchData () {
-      if (this.id) {
-        Document.get({ id: this.id })
+      if (this.documentId) {
+        Document.get({ documentId: this.documentId })
           .then(({ body: document }) => {
             this.document = document
             if (this.editor) {
               this.editor.setValue(document.markdown)
             }
           })
+      } else {
+        this.document = {
+          title: '',
+          markdown: '',
+          type: 'draft',
+        }
       }
     },
     saveDocument () {
-      if (this.id) {
-        Document.update({ id: this.id }, this.document)
+      if (this.documentId) {
+        Document.update({ documentId: this.documentId }, this.document)
           .then(({ body: msg }) => {
             console.log(msg)
           })

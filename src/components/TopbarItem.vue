@@ -10,6 +10,9 @@ export default {
   created () {
     this.transport()
   },
+  mounted () {
+    this.transport()
+  },
   updated () {
     this.transport()
   },

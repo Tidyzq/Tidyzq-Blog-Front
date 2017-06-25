@@ -1,23 +1,26 @@
 <template lang='pug'>
-.document-page
+.document-page(:class=`{
+    'show-list': !showDetail,
+    'show-detail': showDetail
+  }`)
   topbar-item(to='topbar')
-    p Documents
-    p(v-if='showDetail') {{ documentsMap[detailId] && documentsMap[detailId].title }}
+    span Documents
+    span(v-if='showDetail') {{ documentsMap[detailId] && documentsMap[detailId].title }}
   topbar-item(to='topbarButtons')
     el-button(v-if='showDetail', type='primary', @click='toEdit(detailId)') Edit
     el-button(v-else, type='success', @click='toAdd') Add
   article
-    .document-list(:class=`{ 'document-split': showDetail }`)
-      router-link.document-item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { id: document.id } }`)
+    .document-list
+      router-link.document-item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)
         .document-item-name
-          span.document-type.document-type-draft(v-if="document.status === 'draft'") Draft
-          span.document-type.document-type-post(v-else-if="document.status === 'published' && !document.isPage") Post
+          span.document-type.document-type-draft(v-if="document.type === 'draft'") Draft
+          span.document-type.document-type-post(v-else-if="document.type === 'published' && !document.isPage") Post
           span.document-type.document-type-page(v-else) Page
           span.document-title {{ document.title }}
         .document-item-detail
-          span.document-author {{ document.author.username }}
+          span.document-author {{ document.author }}
           span.document-created {{ document.createdAt }}
-    router-view.document-detail.document-split
+    router-view.document-detail
 </template>
 
 <script>
@@ -73,7 +76,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 article {
   height: 100%;
 }
@@ -82,9 +85,16 @@ article {
   height: 100%;
   display: inline-block;
   vertical-align: top;
+  width: 50%;
 }
 
-.document-split {
-  width: 50%;
+@media only screen and (max-width: 991px) {
+  .show-detail .document-detail, .show-list .document-list {
+    width: 100%;
+  }
+
+  .show-detail .document-list, .show-list .document-detail {
+    display: none;
+  }
 }
 </style>
