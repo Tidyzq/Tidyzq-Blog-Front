@@ -7,9 +7,10 @@
     portal(to='topbar')
       span Users
     portal(to='topbar-buttons')
-      el-button(type='primary') Create
+      el-button(type='primary', @click='showNewUserDialog = true') New
+  new-user-dialog(:visiable.sync='showNewUserDialog', @created='fetchData')
   article
-    .user-list
+    .user-list(v-loading='loading')
       .user-list-item(v-for='user in users', key='user.id')
         router-link(:to=`{ name: 'UserDetail', params: { userId: user.id } }`)
           span {{ user.id }}
@@ -19,11 +20,17 @@
 
 <script>
 import { User } from '@/apis/index'
+import NewUserDialog from './NewUserDialog'
 
 export default {
+  components: {
+    NewUserDialog,
+  },
   data () {
     return {
       users: [],
+      showNewUserDialog: false,
+      loading: false,
     }
   },
   computed: {
@@ -36,10 +43,12 @@ export default {
   },
   methods: {
     fetchData () {
+      this.loading = true
       User.get()
-      .then(({ body: users }) => {
-        this.users = users
-      })
+        .then(({ body: users }) => {
+          this.users = users
+          this.loading = false
+        })
     },
   },
 }

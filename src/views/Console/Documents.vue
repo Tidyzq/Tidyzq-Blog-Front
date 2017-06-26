@@ -10,7 +10,7 @@
       router-link(:to=`{ name: 'DocumentEditorNew' }`)
         el-button(type='success') Add
   article
-    .document-list
+    .document-list(v-loading='loading')
       router-link.document-item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)
         .document-item-name
           span.document-type.document-type-draft(v-if="document.type === 'draft'") Draft
@@ -26,12 +26,12 @@
 <script>
 import { User, Document } from '@/apis/index'
 import Moment from 'moment'
-import { Observable } from 'rxjs'
 
 export default {
   data () {
     return {
       documents: [],
+      loading: false,
     }
   },
   computed: {
@@ -43,36 +43,27 @@ export default {
     this.fetchData()
   },
   mounted () {
-    Observable.interval(1000).subscribe(() => {
+    this._interval = setInterval(() => {
       this.$forceUpdate()
-    })
+    }, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this._interval)
   },
   methods: {
     fetchData () {
-      Observable.fromPromise(Document.get())
-        .pluck('body')
-        .concatMap(documents => Observable.from(documents))
-        .map(document =>
-          Observable.fromPromise(User.get({ userId: document.author })).pluck('body')
-            .map(author => Object.assign(document, { author }))
-        )
-        .combineAll()
-        .subscribe(documents => {
+      this.loading = true
+      Document.get()
+        .then(({ body: documents }) => Promise.all(
+          documents.map(document =>
+            User.get({ userId: document.author })
+              .then(author => Object.assign(document, { author }))
+          )
+        ))
+        .then(documents => {
           this.documents = documents
+          this.loading = false
         })
-    },
-    toEdit (id) {
-      this.$router.push({
-        name: 'DocumentEditor',
-        params: {
-          id,
-        },
-      })
-    },
-    toAdd () {
-      this.$router.push({
-        name: 'DocumentEditorNew',
-      })
     },
   },
   filters: {

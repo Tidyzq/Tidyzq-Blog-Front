@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/views/Console/Home'
 import Users from '@/views/Console/Users'
 import UserDetail from '@/views/Console/UserDetail'
 import Documents from '@/views/Console/Documents'
@@ -14,10 +13,6 @@ export default new Router({
   base: '/console',
   routes: [
     {
-      path: '/',
-      name: 'Home',
-      component: Home,
-    }, {
       path: '/users',
       name: 'Users',
       component: Users,
@@ -52,6 +47,6 @@ export default new Router({
         },
       ],
     },
-    { path: '*', redirect: '/' },
+    { path: '*', redirect: '/documents' },
   ],
 })

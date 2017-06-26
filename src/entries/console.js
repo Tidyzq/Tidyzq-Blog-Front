@@ -12,6 +12,8 @@ import 'font-awesome/css/font-awesome.css'
 import SideMenu from '@/components/SideMenu'
 import Topbar from '@/components/Topbar'
 import FileSelect from '@/components/FileSelect'
+import AvatarSelect from '@/components/AvatarSelect'
+import FormPlainText from '@/components/FormPlainText'
 
 Vue.config.productionTip = false
 
@@ -21,6 +23,8 @@ Vue.use(Portal)
 Vue.component('side-menu', SideMenu)
 Vue.component('topbar', Topbar)
 Vue.component('file-select', FileSelect)
+Vue.component('avatar-select', AvatarSelect)
+Vue.component('form-plain-text', FormPlainText)
 
 /* eslint-disable no-new */
 new Vue({

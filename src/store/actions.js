@@ -6,11 +6,11 @@ export function login ({ commit, dispatch }, user, toSession) {
     email: user.email,
     password: user.password,
   })
-  .then(({ body: { accessToken, user: currentUser } }) => {
-    commit('UPDATE_ACCESS_TOKEN', accessToken)
-    commit('UPDATE_CURRENT_USER', currentUser)
-  })
-  .then(() => dispatch('saveToStorage', toSession))
+    .then(({ body: { accessToken, user: currentUser } }) => {
+      commit('UPDATE_ACCESS_TOKEN', accessToken)
+      commit('UPDATE_CURRENT_USER', currentUser)
+    })
+    .then(() => dispatch('saveToStorage', toSession))
 }
 
 export function logout ({ commit, dispatch }) {

@@ -41,16 +41,16 @@ export default {
         email: this.email,
         password: this.password,
       })
-      .then(() => {
-        window.location.assign('/console')
-      })
-      .catch(err => {
-        err = err && err.body ? err.body : err
-        this.$message({
-          message: err,
-          type: 'error',
+        .then(() => {
+          window.location.assign('/console')
         })
-      })
+        .catch(err => {
+          err = err && err.body ? err.body : err
+          this.$message({
+            message: err,
+            type: 'error',
+          })
+        })
     },
     ...mapActions([
       'login',
