@@ -14,6 +14,7 @@ import Topbar from '@/components/Topbar'
 import FileSelect from '@/components/FileSelect'
 import AvatarSelect from '@/components/AvatarSelect'
 import FormPlainText from '@/components/FormPlainText'
+import MarkdownEditor from '@/components/MarkdownEditor'
 
 Vue.config.productionTip = false
 
@@ -25,6 +26,7 @@ Vue.component('topbar', Topbar)
 Vue.component('file-select', FileSelect)
 Vue.component('avatar-select', AvatarSelect)
 Vue.component('form-plain-text', FormPlainText)
+Vue.component('markdown-editor', MarkdownEditor)
 
 /* eslint-disable no-new */
 new Vue({

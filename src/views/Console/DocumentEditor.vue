@@ -1,24 +1,24 @@
 <template lang='pug'>
-.editor
+.editor-page(v-loading='loading')
   portal(to='topbar')
     el-input(v-model='document.title')
   portal(to='topbar-buttons')
     el-button(type='success', @click='saveDocument') save
-  textarea(ref='editor')
-  div(ref='pre', v-html='html')
+  article
+    .editor
+      markdown-editor(v-model='document.markdown')
+    .preview(ref='pre', v-html='html')
 </template>
 
 <script>
 import { Document } from '@/apis/index'
 import Markdown from '@/utils/markdown'
-import CodeMirror from 'codemirror'
-import 'codemirror/mode/markdown/markdown'
-import 'codemirror/lib/codemirror.css'
 
 export default {
   data () {
     return {
       document: {},
+      loading: false,
     }
   },
   computed: {
@@ -32,49 +32,69 @@ export default {
   created () {
     this.fetchData()
   },
-  mounted () {
-    this.editor = CodeMirror.fromTextArea(this.$refs.editor, {
-      mode: 'markdown',
-      value: this.document.markdown,
-    })
-    this.editor.on('change', (instance, changeObj) => {
-      const { origin } = changeObj
-      if (origin !== 'setValue') {
-        this.$set(this.document, 'markdown', this.editor.getValue())
-      }
-    })
-  },
   methods: {
     fetchData () {
-      if (this.documentId) {
-        Document.get({ documentId: this.documentId })
-          .then(({ body: document }) => {
-            this.document = document
-            if (this.editor) {
-              this.editor.setValue(document.markdown)
+      this.loading = true
+      Promise.resolve()
+        .then(() => {
+          return this.documentId ?
+            Document.get({ documentId: this.documentId })
+              .then(({ body: document }) => document)
+            : {
+              title: '',
+              markdown: '',
+              type: 'draft',
             }
-          })
-      } else {
-        this.document = {
-          title: '',
-          markdown: '',
-          type: 'draft',
-        }
-      }
+        })
+        .then(document => {
+          this.document = document
+          this.loading = false
+        })
     },
     saveDocument () {
-      if (this.documentId) {
-        Document.update({ documentId: this.documentId }, this.document)
-          .then(({ body: msg }) => {
-            console.log(msg)
+      Promise.resolve()
+        .then(() => {
+          return this.documentId ?
+            Document.update({ documentId: this.documentId }, this.document) :
+            Document.save(this.document)
+        })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: 'Save Success!',
           })
-      } else {
-        Document.save(this.document)
-          .then(({ body: msg }) => {
-            console.log(msg)
-          })
-      }
+        })
+        .catch(err => this.onError(err))
+    },
+    onError (err) {
+      err = err && err.body ? err.body : err
+      this.$message({
+        message: err,
+        type: 'error',
+      })
     },
   },
 }
 </script>
+
+<style scoped>
+article {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.editor, .preview {
+  width: 100%;
+  flex: auto;
+  overflow: hidden;
+}
+
+.preview {
+  background: green;
+}
+</style>

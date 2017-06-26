@@ -19,7 +19,8 @@
           span.document-title {{ document.title }}
         .document-item-detail
           span.document-author {{ document.author.username }}
-          span.document-created {{ document.createdAt | fromNow }}
+          span.document-createdAt {{ document.createdAt | fromNow }}
+          span.document-modifiedAt {{ document.modifiedAt | fromNow }}
     router-view.document-detail
 </template>
 
