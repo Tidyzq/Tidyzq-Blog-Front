@@ -1,7 +1,7 @@
 <template lang='pug'>
 .console-page
   side-menu.sidebar(:class=`{ open: openSidebar }`)
-  .main-content(@click='OnClickMainContent')
+  .main-content(@click='onClickMainContent')
     topbar.topbar
     router-view.secondary-content
 </template>
@@ -19,7 +19,7 @@ export default {
   },
   created () {
     AuthorizationEvent.$on('failed', () => {
-      this.OnAuthFail()
+      this.onAuthFail()
     })
     this.checkLogin()
       .catch(() => {
@@ -39,23 +39,29 @@ export default {
     ...mapActions([
       'checkLogin',
     ]),
-    OnClickMainContent () {
+    onClickMainContent () {
       SideMenuEvent.$emit('close')
     },
-    OnAuthFail () {
+    onAuthFail () {
       window.location.assign('/console/login')
     },
   },
 }
 </script>
 
-<style>
+<style lang='less'>
 html, body {
   height: 100%;
   width: 100%;
   margin: 0;
   border: 0;
   padding: 0;
+}
+
+.el-form {
+  .el-input, .el-select {
+    width: 100%;
+  }
 }
 </style>
 

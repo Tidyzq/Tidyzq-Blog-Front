@@ -34,6 +34,9 @@ export default {
       mode: 'markdown',
       value: this.value,
     })
+    CodeMirror.commands.save = () => {
+      this.$emit('save')
+    }
     this.editor.on('change', (instance, { origin }) => {
       if (origin !== 'setValue') {
         this._value = this.editor.getValue()
