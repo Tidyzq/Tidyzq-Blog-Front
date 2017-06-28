@@ -4,6 +4,8 @@ import Users from '@/views/Console/Users'
 import UserDetail from '@/views/Console/UserDetail'
 import Documents from '@/views/Console/Documents'
 import DocumentDetail from '@/views/Console/DocumentDetail'
+import Tags from '@/views/Console/Tags'
+import TagDetail from '@/views/Console/TagDetail'
 import DocumentEditor from '@/views/Console/DocumentEditor'
 
 Vue.use(Router)
@@ -32,6 +34,17 @@ export default new Router({
           path: ':documentId',
           name: 'DocumentDetail',
           component: DocumentDetail,
+        },
+      ],
+    }, {
+      path: '/tags',
+      name: 'Tags',
+      component: Tags,
+      children: [
+        {
+          path: ':tagId',
+          name: 'TagDetail',
+          component: TagDetail,
         },
       ],
     }, {

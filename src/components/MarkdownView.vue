@@ -1,12 +1,9 @@
 <template lang='pug'>
-  .markdown-editor
-    textarea(ref='editor')
+  .markdown-view(ref='view', @scroll='onScroll', v-html='html')
 </template>
 
 <script>
-import CodeMirror from 'codemirror'
-import 'codemirror/mode/markdown/markdown'
-import 'codemirror/lib/codemirror.css'
+import Markdown from '@/utils/markdown'
 
 export default {
   props: {
@@ -19,13 +16,8 @@ export default {
     }
   },
   computed: {
-    _value: {
-      get () {
-        return this.value
-      },
-      set (val) {
-        this.$emit('input', val)
-      },
+    html () {
+      return Markdown.render(this.value || '')
     },
     _scroll: {
       get () {
@@ -37,35 +29,13 @@ export default {
     },
   },
   watch: {
-    value (val) {
-      if (val !== this.editor.getValue()) {
-        this.editor.setValue(val)
-      }
-    },
     scroll (val) {
       this.scrollTo(val)
     },
   },
-  mounted () {
-    this.editor = CodeMirror.fromTextArea(this.$refs.editor, {
-      mode: 'markdown',
-      value: this.value,
-    })
-    CodeMirror.commands.save = () => {
-      this.$emit('save')
-    }
-    this.editor.on('change', (instance, { origin }) => {
-      if (origin !== 'setValue') {
-        this._value = this.editor.getValue()
-      }
-    })
-    this.editor.on('scroll', () => {
-      this.onScroll()
-    })
-  },
   methods: {
     onScroll () {
-      if (!this.scrolling && this.getRealScroll() !== this._scroll) {
+      if (!this.scrolling) {
         const delay = 250, now = Date.now()
         if (!this._throttleScroll || this._throttleScroll + delay <= now) {
           this._throttleScroll = now
@@ -77,12 +47,12 @@ export default {
       }
     },
     getRealScroll () {
-      const { top, height, clientHeight } = this.editor.getScrollInfo()
-      return top / (height - clientHeight)
+      const view = this.$refs.view
+      return view.scrollTop / (view.scrollHeight - view.clientHeight)
     },
     setRealScroll (val) {
-      const { height, clientHeight } = this.editor.getScrollInfo()
-      this.editor.scrollTo(0, val * (height - clientHeight))
+      const view = this.$refs.view
+      view.scrollTop = val * (view.scrollHeight - view.clientHeight)
     },
     scrollTo (val) {
       const realScroll = this.getRealScroll()
@@ -117,12 +87,4 @@ export default {
 }
 </script>
 
-<style>
-.markdown-editor {
-  height: 100%;
-}
-
-.markdown-editor .CodeMirror {
-  height: 100%;
-}
-</style>
+<style src='@/less/markdown.less' lang='less' />

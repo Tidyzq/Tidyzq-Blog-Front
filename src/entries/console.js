@@ -15,6 +15,7 @@ import FileSelect from '@/components/FileSelect'
 import AvatarSelect from '@/components/AvatarSelect'
 import FormPlainText from '@/components/FormPlainText'
 import MarkdownEditor from '@/components/MarkdownEditor'
+import MarkdownView from '@/components/MarkdownView'
 
 Vue.config.productionTip = false
 
@@ -27,6 +28,7 @@ Vue.component('file-select', FileSelect)
 Vue.component('avatar-select', AvatarSelect)
 Vue.component('form-plain-text', FormPlainText)
 Vue.component('markdown-editor', MarkdownEditor)
+Vue.component('markdown-view', MarkdownView)
 
 /* eslint-disable no-new */
 new Vue({

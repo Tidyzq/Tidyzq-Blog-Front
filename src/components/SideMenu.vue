@@ -10,6 +10,9 @@
     li: router-link.menu-item(active-class='active', :to=`{ name: 'Documents' }`)
         i.el-icon-menu
         | Documents
+    li: router-link.menu-item(active-class='active', :to=`{ name: 'Tags' }`)
+        i.el-icon-menu
+        | Tags
     //- li.menu-item
     //-   router-link(active-class='active', :to=`{ name: 'Tags' }`)
     //-     i.el-icon-menu

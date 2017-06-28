@@ -17,14 +17,12 @@
         el-form-item(label='Url')
           el-input(v-model='document.url')
   article
-    .editor
-      markdown-editor(v-model='document.markdown', @save='saveDocument')
-    .preview(ref='pre', v-html='html')
+    markdown-editor.editor(v-model='document.markdown', @save='saveDocument', :scroll.sync='editorScroll')
+    markdown-view.preview(v-model='document.markdown', :scroll.sync='editorScroll')
 </template>
 
 <script>
 import { Document } from '@/apis/index'
-import Markdown from '@/utils/markdown'
 
 export default {
   data () {
@@ -32,14 +30,12 @@ export default {
       document: {},
       showSettings: false,
       loading: false,
+      editorScroll: 0,
     }
   },
   computed: {
     documentId () {
       return this.$route.params.documentId
-    },
-    html () {
-      return Markdown.render(this.document.markdown || '')
     },
   },
   created () {
@@ -104,6 +100,7 @@ article {
 }
 
 .preview {
-  background: green;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>

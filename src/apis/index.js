@@ -40,14 +40,14 @@ export const Document = Object.assign(Vue.resource('/api/documents{/documentId}'
   Tag: Vue.resource('/api/documents{/documentId}/tags{/tagId}'),
 })
 
-export const Tag = {
+export const Tag = Object.assign(Vue.resource('/api/tags'), {
   Id: Object.assign(Vue.resource('/api/tags/id{/tagId}'), {
     Document: Vue.resource('/api/tags/id{/tagId}/documents'),
   }),
   Url: Object.assign(Vue.resource('/api/tags/url{/tagUrl}'), {
     Post: Vue.resource('/api/tags/url{/tagUrl}/posts'),
   }),
-}
+})
 
 export const Post = Object.assign(Vue.resource('/api/posts{/postUrl}'), {
   Tag: Vue.resource('/api/posts{/postUrl}/tags'),
