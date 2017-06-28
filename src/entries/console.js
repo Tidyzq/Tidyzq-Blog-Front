@@ -15,7 +15,6 @@ import FileSelect from '@/components/FileSelect'
 import AvatarSelect from '@/components/AvatarSelect'
 import FormPlainText from '@/components/FormPlainText'
 import MarkdownEditor from '@/components/MarkdownEditor'
-import CollapseTransition from '@/components/CollapseTransition'
 
 Vue.config.productionTip = false
 
@@ -28,7 +27,6 @@ Vue.component('file-select', FileSelect)
 Vue.component('avatar-select', AvatarSelect)
 Vue.component('form-plain-text', FormPlainText)
 Vue.component('markdown-editor', MarkdownEditor)
-Vue.component('collapse-transition', CollapseTransition)
 
 /* eslint-disable no-new */
 new Vue({
