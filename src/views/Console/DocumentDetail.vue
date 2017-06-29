@@ -6,13 +6,12 @@
   portal(to='topbar-buttons', v-if='isAuthor')
     router-link(:to=`{ name: 'DocumentEditor', params: { documentId: documentId } }`)
       el-button(type='primary') Edit
-  .preview(v-html='html')
+  markdown-view.preview(v-model='document.markdown')
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { User, Document } from '@/apis/index'
-import Markdown from '@/utils/markdown'
 
 export default {
   data () {
@@ -30,12 +29,6 @@ export default {
     },
     documentId () {
       return this.$route.params.documentId
-    },
-    markdown () {
-      return this.document.markdown || ''
-    },
-    html () {
-      return Markdown.render(this.markdown)
     },
   },
   watch: {
@@ -64,7 +57,9 @@ export default {
 </script>
 
 <style>
-.document-detail {
-  background: greenyellow;
+.preview {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>

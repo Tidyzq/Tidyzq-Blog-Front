@@ -35,6 +35,15 @@ export default {
       this.openSidebar = false
     })
   },
+  mounted () {
+    // disable drop files
+    const disableDrop = e => {
+      e = e || event
+      e.preventDefault()
+    }
+    window.addEventListener('dragover', disableDrop, false)
+    window.addEventListener('drop', disableDrop, false)
+  },
   methods: {
     ...mapActions([
       'checkLogin',
