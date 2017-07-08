@@ -16,17 +16,21 @@
             el-option(label='Page', value='page')
         el-form-item(label='Url')
           el-input(v-model='document.url')
+        el-form-item(label='Tags')
+          el-select(v-model='document.tags', multiple)
+            el-option(v-for='tag in tags', key='tag.id', :label='tag.name', :value='tag.id')
   article
     markdown-editor.editor(v-model='document.markdown', @save='saveDocument', :scroll.sync='editorScroll')
     markdown-view.preview(v-model='document.markdown', :scroll.sync='editorScroll')
 </template>
 
 <script>
-import { Document } from '@/apis/index'
+import { Document, Tag } from '@/apis/index'
 
 export default {
   data () {
     return {
+      tags: [],
       document: {},
       showSettings: false,
       loading: false,
@@ -37,32 +41,68 @@ export default {
     documentId () {
       return this.$route.params.documentId
     },
+    tagsMap () {
+      const map = {}
+      for (const tag of this.tags) {
+        map[tag.id] = tag
+      }
+      return map
+    },
   },
   created () {
     this.fetchData()
   },
+  watch: {
+    showSettings (val) {
+      if (val) {
+        this.fetchTags()
+      }
+    },
+  },
   methods: {
     fetchData () {
       this.loading = true
-      Promise.resolve()
+      this.fetchDocument()
+        .then(() => {
+          this.loading = false
+        })
+    },
+    fetchDocument () {
+      return Promise.resolve()
         .then(() => {
           return this.documentId ?
-            Document.get({ documentId: this.documentId })
-              .then(({ body: document }) => document) :
+            Promise.all([
+              Document.get({ documentId: this.documentId }).then(({ body: document }) => document),
+              Document.Tag.get({ documentId: this.documentId }).then(({ body: tags }) => tags.map(tag => tag.id)),
+            ]).then(([ document, tags ]) => Object.assign(document, { tags })) :
             { title: '', markdown: '', type: 'draft' }
         })
         .then(document => {
           this.document = document
-          this.loading = false
+        })
+    },
+    fetchTags () {
+      return Tag.get()
+        .then(({ body: tags }) => {
+          this.tags = tags
         })
     },
     saveDocument () {
       Promise.resolve()
         .then(() => {
+          const data = {
+            title: this.document.title,
+            type: this.document.type,
+            url: this.document.url,
+            markdown: this.document.markdown,
+          }
           return this.documentId ?
-            Document.update({ documentId: this.documentId }, this.document) :
-            Document.save(this.document)
+            Document.update({ documentId: this.documentId }, data).then(({ body: document }) => document.id) :
+            Document.save(data).then(({ body: document }) => document.id)
         })
+        .then(id =>
+          Document.Tag.update({ documentId: id }, this.document.tags),
+        )
         .then(() => {
           this.$message({
             type: 'success',

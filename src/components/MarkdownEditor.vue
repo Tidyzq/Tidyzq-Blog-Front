@@ -94,7 +94,7 @@ export default {
         )
         .then(formData => Image.save(formData).then(({ body: images }) => images))
         .then(images =>
-          images.map(({ key, url }) => `![${key}](${url})`).join('\n')
+          images.map(({ key, url }) => `![${key}](${url} "${key}")`).join('\n')
         )
         .then(text => {
           const cursor = instance.getCursor()
