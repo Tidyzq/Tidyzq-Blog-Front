@@ -9,7 +9,7 @@
       el-form-item(label='Name')
         el-input(v-model='tag.name')
       el-form-item(label='Url')
-        form-plain-text {{ tag.url }}
+        el-input(v-model='tag.url')
 </template>
 
 <script>
@@ -26,10 +26,9 @@ export default {
       return Number.parseInt(this.$route.params.tagId)
     },
   },
-  watch: {
-    tagId () {
-      this.fetchData()
-    },
+  beforeRouteUpdate (to, from, next) {
+    next()
+    this.fetchData()
   },
   created () {
     this.fetchData()

@@ -7,6 +7,7 @@ import DocumentDetail from '@/views/Console/DocumentDetail'
 import Tags from '@/views/Console/Tags'
 import TagDetail from '@/views/Console/TagDetail'
 import DocumentEditor from '@/views/Console/DocumentEditor'
+import Settings from '@/views/Console/Settings'
 
 Vue.use(Router)
 
@@ -59,6 +60,10 @@ export default new Router({
           name: 'DocumentEditor',
         },
       ],
+    }, {
+      path: '/settings',
+      name: 'Settings',
+      component: Settings,
     },
     { path: '*', redirect: '/documents' },
   ],

@@ -13,6 +13,9 @@
     li: router-link.menu-item(active-class='active', :to=`{ name: 'Tags' }`)
         i.el-icon-menu
         | Tags
+    li: router-link.menu-item(active-class='active', :to=`{ name: 'Settings' }`)
+        i.el-icon-menu
+        | Settings
     //- li.menu-item
     //-   router-link(active-class='active', :to=`{ name: 'Tags' }`)
     //-     i.el-icon-menu

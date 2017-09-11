@@ -3,11 +3,13 @@
     'show-list': !showDetail,
     'show-detail': showDetail
   }`)
+  //- 顶栏
   template(v-if='!showDetail')
     portal(to='topbar')
       span Tags
     portal(to='topbar-buttons')
       el-button(type='primary', @click='showNewTagDialog = true') New
+  //- 新标签弹出框
   new-tag-dialog(:visiable.sync='showNewTagDialog', @created='onCreateSuccess')
   article
     .tag-list(v-loading='loading')
