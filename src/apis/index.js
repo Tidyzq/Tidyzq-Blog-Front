@@ -6,7 +6,7 @@ Vue.use(VueResource)
 
 Vue.http.interceptors.push((request, next) => {
   const store = require('@/store').default
-  if (store.state.accessToken) {
+  if (store.state.accessToken && !request.headers.has('Authorization')) {
     request.headers.set('Authorization', `JWT ${store.state.accessToken}`)
   }
   next()
@@ -55,4 +55,6 @@ export const Post = Object.assign(Vue.resource('/api/posts{/postUrl}'), {
 
 export const Page = Vue.resource('/api/pages{/pageUrl}')
 
-export const Image = Vue.resource('/api/images')
+export const Cos = require('./cos').default
+
+export const Setting = Vue.resource('/api/settings')

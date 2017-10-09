@@ -2,7 +2,7 @@
   el-dialog(v-loading='loading', title='New User', v-model='_visiable')
     el-form
       el-form-item(label='Avatar')
-        avatar-select(v-model='avatar')
+        cos-select(v-model='user.avatar')
       el-form-item(label='Username')
         el-input(placeholder='Input Username', v-model='user.username')
       el-form-item(label='Email')
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { User, Image } from '@/apis'
+import { User } from '@/apis'
 
 export default {
   props: {
@@ -24,7 +24,6 @@ export default {
   },
   data () {
     return {
-      avatar: {},
       user: {},
       loading: false,
     }
@@ -52,9 +51,6 @@ export default {
     onCreate () {
       this.loading = true
       Promise.resolve()
-        .then(() => {
-          return this.avatar ? this.uploadAvatar() : null
-        })
         .then(() => this.createUser())
         .then(() => {
           this.$emit('created')
@@ -64,14 +60,6 @@ export default {
     },
     createUser () {
       return User.save(this.user)
-    },
-    uploadAvatar () {
-      const formData = new FormData()
-      formData.append('images', this.avatar)
-      return Image.save(formData)
-        .then(({ body: [ avatar ]}) => {
-          this.user.avatar = avatar.url
-        })
     },
   },
 }

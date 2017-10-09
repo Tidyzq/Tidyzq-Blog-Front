@@ -7,7 +7,8 @@
 import CodeMirror from 'codemirror'
 import 'codemirror/mode/markdown/markdown'
 import ScrollMixin from '@/mixins/scroll'
-import { Image } from '@/apis'
+import { Cos } from '@/apis'
+import config from '@/config'
 
 const CodeMirrorSettings = {
   mode: 'markdown',
@@ -86,13 +87,19 @@ export default {
             Array.prototype.map.call(dataTransfer.items, (item => item.getAsFile())) :
             dataTransfer.files
         })
-        .then(files =>
-          files.reduce((formData, file) => {
-            formData.append('images', file)
-            return formData
-          }, new FormData())
-        )
-        .then(formData => Image.save(formData).then(({ body: images }) => images))
+        .then(files => Promise.all(
+          files.map(file => Cos.put(file).then(() => Object.assign({
+            key: file.name,
+            url: `${config.cos.cdnUrl}/${file.name}`,
+          })))
+        ))
+        // .then(files =>
+        //   files.reduce((formData, file) => {
+        //     formData.append('images', file)
+        //     return formData
+        //   }, new FormData())
+        // )
+        // .then(formData => Image.save(formData).then(({ body: images }) => images))
         .then(images =>
           images.map(({ key, url }) => `![${key}](${url} "${key}")`).join('\n')
         )

@@ -13,3 +13,7 @@ export function UPDATE_CURRENT_USER (state, currentUser) {
 export function REMOVE_CURRENT_USER (state) {
   state.currentUser = {}
 }
+
+export function UPDATE_SETTINGS (state, settings) {
+  Object.assign(state.settings, settings)
+}

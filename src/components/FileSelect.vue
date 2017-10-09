@@ -16,7 +16,6 @@ export default {
   },
   methods: {
     OnClick () {
-      console.log('trigger')
       this.$refs.file.click()
     },
     OnFileChange (e) {

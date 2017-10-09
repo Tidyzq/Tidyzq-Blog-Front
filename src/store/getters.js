@@ -5,3 +5,7 @@ export function accessToken (state) {
 export function currentUser (state) {
   return state.currentUser
 }
+
+export function settings (state) {
+  return state.settings
+}

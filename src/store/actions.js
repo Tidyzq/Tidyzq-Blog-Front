@@ -1,4 +1,4 @@
-import { Auth } from '@/apis'
+import { Auth, Setting } from '@/apis'
 import * as storage from './storage'
 
 export function login ({ commit, dispatch }, user, toSession) {
@@ -56,4 +56,21 @@ export function readFromStorage ({ commit }) {
     commit('REMOVE_CURRENT_USER')
   }
   return Promise.resolve({ accessToken, currentUser })
+}
+
+let fetchingSettings = null
+
+export function fetchSettings ({ commit }) {
+  if (!fetchingSettings) {
+    fetchingSettings = Setting.get()
+      .then(({ body: settings }) => {
+        fetchingSettings = null
+        commit('UPDATE_SETTINGS', settings)
+      })
+  }
+  return fetchingSettings
+}
+
+export function updateSettings ({ state }) {
+  return Setting.update(state.settings)
 }

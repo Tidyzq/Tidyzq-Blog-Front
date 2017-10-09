@@ -10,6 +10,14 @@ export default new Vuex.Store({
   state: {
     accessToken: null,
     currentUser: {},
+    settings: {
+      title: '',
+      description: '',
+      logo: '',
+      cover: '',
+      postPerPage: 0,
+      navigation: [],
+    },
   },
   mutations,
   actions,

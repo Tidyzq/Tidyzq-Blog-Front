@@ -25,6 +25,7 @@ export default {
       .catch(() => {
         AuthorizationEvent.$emit('failed')
       })
+    this.fetchSettings()
     SideMenuEvent.$on('toggle', () => {
       this.openSidebar = !this.openSidebar
     })
@@ -47,6 +48,7 @@ export default {
   methods: {
     ...mapActions([
       'checkLogin',
+      'fetchSettings'
     ]),
     onClickMainContent () {
       SideMenuEvent.$emit('close')
@@ -70,7 +72,7 @@ html, body {
 }
 
 .el-form {
-  .el-input, .el-select {
+  .el-input, .el-select, .el-input-number {
     width: 100%;
   }
 }
@@ -137,7 +139,8 @@ html, body {
 .secondary-content {
   position: relative;
   flex: auto;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .sidebar {

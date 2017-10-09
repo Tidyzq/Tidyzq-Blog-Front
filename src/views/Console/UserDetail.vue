@@ -8,7 +8,7 @@
     template(v-if='isSelf')
       el-form
         el-form-item(label='Avatar')
-          avatar-select(v-model='avatar', :default-url='user.avatar')
+          cos-select(v-model='user.avatar')
         el-form-item(label='Username')
           el-input(v-model='user.username')
         el-form-item(label='Email')
@@ -36,7 +36,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { User, Image } from '@/apis/index'
+import { User } from '@/apis/index'
 
 export default {
   data () {
@@ -47,7 +47,6 @@ export default {
         new: '',
         newRpt: '',
       },
-      avatar: null,
     }
   },
   computed: {
@@ -112,19 +111,8 @@ export default {
           this.user = user
         })
     },
-    onSelectAvatar (files) {
-      this.upload.avatar = files[0]
-      const reader = new FileReader()
-      reader.onload = ev => {
-        this.upload.avatarDataUrl = ev.target.result
-      }
-      reader.readAsDataURL(files[0])
-    },
     onSave () {
       Promise.resolve()
-        .then(() => {
-          return this.avatar ? this.uploadAvatar() : null
-        })
         .then(() => this.updateUser())
         .then(() => this.$message({
           type: 'success',
@@ -143,14 +131,6 @@ export default {
             .catch(err => this.onError(err))
         }
       })
-    },
-    uploadAvatar () {
-      const formData = new FormData()
-      formData.append('images', this.avatar)
-      return Image.save(formData)
-        .then(({ body: [ avatar ] }) => {
-          this.user.avatar = avatar.url
-        })
     },
     updateUser () {
       return User.update({
