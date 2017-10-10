@@ -48,7 +48,7 @@ export default {
   methods: {
     ...mapActions([
       'checkLogin',
-      'fetchSettings'
+      'fetchSettings',
     ]),
     onClickMainContent () {
       SideMenuEvent.$emit('close')

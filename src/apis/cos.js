@@ -20,21 +20,20 @@ function listBucket () {
     .then(({ ListBucketResult }) => ListBucketResult)
 }
 
-function putObject (key, file) {
-  if (arguments.length < 2) {
+function putObject (key, file, progress) {
+  if (arguments.length < 3) {
+    progress = file
     file = key
     key = (file || {}).name
   }
   return getAuthorization('put', key)
-    .then(token => Vue.http.put(`${url}/${key}`, file, { headers: { Authorization: token, 'Content-Type': file.type } }))
+    .then(token => Vue.http.put(`${url}/${key}`, file, { headers: { Authorization: token, 'Content-Type': file.type }, progress }))
     .then(() => `${config.cos.cdnUrl}/${key}`)
 }
 
 function deleteObject (key) {
   return getAuthorization('delete', key)
     .then(token => Vue.http.delete(`${url}/${key}`, { headers: { Authorization: token } }))
-    // .then(({ body }) => xml(body))
-    .then(console.log)
 }
 
 export default {
