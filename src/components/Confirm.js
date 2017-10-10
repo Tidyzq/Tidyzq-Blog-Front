@@ -5,12 +5,10 @@ const ConfirmConstructor = Vue.extend(ConfirmComponent)
 let instance
 
 export default function Confirm (title, message) {
-  let vm
 
   if (instance) {
-    vm = instance.vm
-    vm.title = title
-    vm.message = message
+    instance.title = title
+    instance.message = message
   } else {
     instance = new ConfirmConstructor({
       propsData: {
@@ -18,12 +16,12 @@ export default function Confirm (title, message) {
         message,
       },
     })
-    vm = instance.vm = instance.$mount()
-    document.body.appendChild(vm.$el)
+    instance.$mount()
+    document.body.appendChild(instance.$el)
   }
 
   return new Promise(resolve => {
-    vm.$once('confirm', resolve)
-    vm.$emit('open')
+    instance.$once('confirm', resolve)
+    instance.$emit('open')
   })
 }
