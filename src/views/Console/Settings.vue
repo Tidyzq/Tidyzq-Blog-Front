@@ -91,6 +91,10 @@ export default {
 </script>
 
 <style>
+.settings {
+  padding: 1rem 2rem;
+}
+
 .navigation {
   width: 100%;
 }

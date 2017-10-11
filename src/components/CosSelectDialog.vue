@@ -1,5 +1,7 @@
 <template lang="pug">
   el-dialog(title='Select File', :visible.sync='visiable', size='large', :before-close='onSelectCancel')
+    .cos-select__url-input
+      el-input(v-model='selectedFile')
     .cos-select__file-list(v-loading='loading')
       el-card.file-list-item(v-for='file in files', key='file.key', :body-style="{ padding: '0px' }")
         .file-list-item__preview(@click='selectedFile = file.url')

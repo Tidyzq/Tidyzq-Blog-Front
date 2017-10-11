@@ -72,9 +72,11 @@ export default {
       try {
         if (!this.documentId) { // new document
           this.document = {
+            id: null,
             title: '',
             markdown: '',
             type: 'draft',
+            tags: [],
           }
 
         } else { // fetch document
@@ -105,12 +107,13 @@ export default {
 
         if (!this.documentId) { // new document
           const { body: document } = await Document.save(data)
-          this.documentId = document.id
+          await Document.Tag.update({ documentId: document.id }, this.document.tags)
         } else { // existed document
-          await Document.update({ documentId: this.documentId }, data)
+          await Promise.all([
+            Document.update({ documentId: this.documentId }, data),
+            Document.Tag.update({ documentId: this.documentId }, this.document.tags)
+          ])
         }
-
-        await Document.Tag.update({ documentId: this.documentId }, this.document.tags)
 
         this.$message({
           type: 'success',

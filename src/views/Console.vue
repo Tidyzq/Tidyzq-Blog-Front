@@ -139,8 +139,7 @@ html, body {
 .secondary-content {
   position: relative;
   flex: auto;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: auto;
 }
 
 .sidebar {

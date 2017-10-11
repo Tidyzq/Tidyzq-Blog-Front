@@ -11,16 +11,15 @@
         el-button(type='primary') New
   article
     .document-list(v-loading='loading')
-      router-link.document-item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)
-        .document-item-name
-          span.document-type.document-type-draft(v-if="document.type === 'draft'") Draft
-          span.document-type.document-type-post(v-else-if="document.type === 'published' && !document.isPage") Post
-          span.document-type.document-type-page(v-else) Page
-          span.document-title {{ document.title }}
-        .document-item-detail
-          span.document-author {{ document.author.username }}
-          span.document-createdAt {{ document.createdAtFromNow }}
-          span.document-modifiedAt {{ document.modifiedAtFromNow }}
+      router-link.document-list__item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)
+        .document-list__type
+          .document-list__type--draft(v-if="document.type === 'draft'") Draft
+          .document-list__type--post(v-else-if="document.type === 'post'") Post
+          .document-list__type--page(v-else) Page
+        .document-list__title {{ document.title }}
+        .document-list__detail
+          .document-list__author {{ document.author.username }}
+          .document-list__modifiedAt updated {{ document.modifiedAtFromNow }}
     router-view.document-detail
 </template>
 
@@ -69,7 +68,7 @@ export default {
     },
     formatDocumentTime (documents) {
       for (const document of documents) {
-        document.createdAtFromNow = Moment(document.createdAt).fromNow()
+        // document.createdAtFromNow = Moment(document.createdAt).fromNow()
         document.modifiedAtFromNow = Moment(document.modifiedAt).fromNow()
       }
     },
@@ -90,8 +89,15 @@ article {
 
 .document-list, .document-detail {
   width: 100%;
-  flex: auto;
-  overflow: hidden;
+  overflow: auto;
+}
+
+.document-list {
+  flex: 1 2 auto;
+}
+
+.document-detail {
+  flex: 2 1 auto;
 }
 
 @media only screen and (max-width: 991px) {
@@ -99,4 +105,66 @@ article {
     display: none;
   }
 }
+
+.document-list__item {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  border-bottom: solid 1px #cadbe6;
+}
+
+.document-list__item:hover {
+  background: #EAF3FD;
+}
+
+.document-list__type {
+  line-height: 3rem;
+  float: left;
+  width: 4rem;
+  text-align: center;
+}
+
+.document-list__type--draft, .document-list__type--post, .document-list__type--page {
+  display: inline-block;
+  line-height: 1rem;
+  padding: 0.3rem;
+  width: 2.4rem;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.document-list__type--draft {
+  background: #f7ba2a;
+}
+
+.document-list__type--post {
+  background: #13ce66;
+}
+
+.document-list__type--page {
+  background: #50bfff;
+}
+
+.document-list__title {
+  line-height: 2rem;
+  font-size: 1.1rem;
+  color: #171d25;
+}
+
+.document-list__detail {
+  color: #a2a2a2;
+  line-height: 1rem;
+  font-size: 0.8rem;
+}
+
+.document-list__detail > * {
+  display: inline;
+}
+
+.document-list__detail > * + * {
+  margin-left: 0.5rem;
+}
+
 </style>

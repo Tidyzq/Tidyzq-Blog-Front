@@ -11,10 +11,9 @@
   new-user-dialog(:visiable.sync='showNewUserDialog', @created='fetchData')
   article
     .user-list(v-loading='loading')
-      .user-list-item(v-for='user in users', key='user.id')
-        router-link(:to=`{ name: 'UserDetail', params: { userId: user.id } }`)
-          span {{ user.id }}
-          span {{ user.username }}
+      router-link.user-list__item(v-for='user in users', key='user.id', :to=`{ name: 'UserDetail', params: { userId: user.id } }`)
+        img.user-list__avatar(:src='user.avatar')
+        .user-list__username {{ user.username }}
     router-view.user-detail
 </template>
 
@@ -69,8 +68,15 @@ article {
 
 .user-list, .user-detail {
   width: 100%;
-  flex: auto;
-  overflow: hidden;
+  overflow: auto;
+}
+
+.user-list {
+  flex: 1 2 auto;
+}
+
+.user-detail {
+  flex: 2 1 auto;
 }
 
 @media only screen and (max-width: 991px) {
@@ -78,4 +84,31 @@ article {
     display: none;
   }
 }
+
+.user-list__item {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  height: 3rem;
+  line-height: 3rem;
+  padding: 0.5rem 1rem;
+  border-bottom: solid 1px #cadbe6;
+}
+
+.user-list__item:hover {
+  background: #EAF3FD;
+}
+
+.user-list__avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  float: left;
+  margin-right: 0.5rem;
+}
+
+.user-list__username {
+  color: #2277da;
+}
+
 </style>
