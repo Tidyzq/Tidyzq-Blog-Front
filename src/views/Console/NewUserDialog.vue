@@ -48,18 +48,16 @@ export default {
     },
   },
   methods: {
-    onCreate () {
+    async onCreate () {
       this.loading = true
-      Promise.resolve()
-        .then(() => this.createUser())
-        .then(() => {
-          this.$emit('created')
-          this.loading = false
-          this._visiable = false
-        })
-    },
-    createUser () {
-      return User.save(this.user)
+      try {
+        await User.save(this.user)
+        this.$emit('created')
+        this._visiable = false
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
     },
   },
 }

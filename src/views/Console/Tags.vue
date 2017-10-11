@@ -44,13 +44,15 @@ export default {
     this.fetchData()
   },
   methods: {
-    fetchData () {
+    async fetchData () {
       this.loading = true
-      Tag.get()
-        .then(({ body: tags }) => {
-          this.tags = tags
-          this.loading = false
-        })
+      try {
+        const { body: tags } = await Tag.get()
+        this.tags = tags
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
     },
     onCreateSuccess () {
       this.$message({

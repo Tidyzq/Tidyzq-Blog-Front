@@ -42,13 +42,15 @@ export default {
     this.fetchData()
   },
   methods: {
-    fetchData () {
+    async fetchData () {
       this.loading = true
-      User.get()
-        .then(({ body: users }) => {
-          this.users = users
-          this.loading = false
-        })
+      try {
+        const { body: users } = await User.get()
+        this.users = users
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
     },
   },
 }

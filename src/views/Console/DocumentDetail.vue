@@ -40,17 +40,17 @@ export default {
     this.fetchData()
   },
   methods: {
-    fetchData () {
+    async fetchData () {
       this.loading = true
-      Document.get({ documentId: this.documentId })
-        .then(({ body: document }) =>
-          User.get({ userId: document.author })
-            .then(({ body: author }) => Object.assign(document, { author }))
-        )
-        .then(document => {
-          this.document = document
-          this.loading = false
-        })
+      try {
+        const { body: document } = await Document.get({ documentId: this.documentId })
+        const { body: author } = await User.get({ userId: document.author })
+        document.author = author
+        this.document = document
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
     },
   },
 }

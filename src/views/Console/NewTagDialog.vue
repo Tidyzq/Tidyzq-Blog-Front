@@ -42,14 +42,17 @@ export default {
     },
   },
   methods: {
-    onCreate () {
+    async onCreate () {
       this.loading = true
-      Tag.save(this.tag)
-        .then(() => {
-          this.$emit('created')
-          this.loading = false
-          this._visiable = false
-        })
+      try {
+        await Tag.save(this.tag)
+        this.$emit('created')
+        this._visiable = false
+      } catch (e) {
+        this.$error(e)
+      }
+
+      this.loading = false
     },
   },
 }

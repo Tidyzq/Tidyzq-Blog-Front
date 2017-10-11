@@ -1,37 +1,34 @@
 import { Auth, Setting } from '@/apis'
 import * as storage from './storage'
 
-export function login ({ commit, dispatch }, user, toSession) {
-  return Auth.login({
+export async function login ({ commit, dispatch }, user, toSession) {
+  const { body: { accessToken, user: currentUser } } = await Auth.login({
     email: user.email,
     password: user.password,
   })
-    .then(({ body: { accessToken, user: currentUser } }) => {
-      commit('UPDATE_ACCESS_TOKEN', accessToken)
-      commit('UPDATE_CURRENT_USER', currentUser)
-    })
-    .then(() => dispatch('saveToStorage', toSession))
+  commit('UPDATE_ACCESS_TOKEN', accessToken)
+  commit('UPDATE_CURRENT_USER', currentUser)
+  dispatch('saveToStorage', toSession)
 }
 
 export function logout ({ commit, dispatch }) {
   commit('REMOVE_ACCESS_TOKEN')
   commit('REMOVE_CURRENT_USER')
-  return dispatch('saveToStorage')
+  dispatch('saveToStorage')
 }
 
-export function checkLogin ({ state, dispatch }) {
-  return dispatch('readFromStorage')
-    .then(() => {
-      if (!state.accessToken) {
-        throw new Error('not login')
-      } else {
-        return Auth.checkLogin()
-          .catch(err => {
-            return dispatch('logout')
-              .then(() => { throw err })
-          })
-      }
-    })
+export async function checkLogin ({ state, dispatch }) {
+  dispatch('readFromStorage')
+  if (!state.accessToken) {
+    throw new Error('not login')
+  } else {
+    try {
+      await Auth.checkLogin()
+    } catch (e) {
+      dispatch('logout')
+      throw e
+    }
+  }
 }
 
 export function saveToStorage ({ state: { accessToken, currentUser} }, toSession) {
@@ -42,7 +39,6 @@ export function saveToStorage ({ state: { accessToken, currentUser} }, toSession
     storage.remove('accessToken')
     storage.remove('currentUser')
   }
-  return Promise.resolve()
 }
 
 export function readFromStorage ({ commit }) {
@@ -55,7 +51,6 @@ export function readFromStorage ({ commit }) {
     commit('REMOVE_ACCESS_TOKEN')
     commit('REMOVE_CURRENT_USER')
   }
-  return Promise.resolve({ accessToken, currentUser })
 }
 
 let fetchingSettings = null

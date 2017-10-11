@@ -17,9 +17,9 @@ import AvatarSelect from '@/components/AvatarSelect'
 import FormPlainText from '@/components/FormPlainText'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import MarkdownView from '@/components/MarkdownView'
-import ConfirmComponent from '@/components/Confirm.vue'
 
 import Confirm from '@/components/Confirm.js'
+import Error from '@/components/Error.js'
 
 Vue.config.productionTip = false
 
@@ -34,9 +34,9 @@ Vue.component('avatar-select', AvatarSelect)
 Vue.component('form-plain-text', FormPlainText)
 Vue.component('markdown-editor', MarkdownEditor)
 Vue.component('markdown-view', MarkdownView)
-Vue.component('confirm', ConfirmComponent)
 
-Vue.prototype.$confirm = Vue.confirm = Confirm
+Vue.prototype.$confirm = Confirm
+Vue.prototype.$error = Error
 
 /* eslint-disable no-new */
 new Vue({

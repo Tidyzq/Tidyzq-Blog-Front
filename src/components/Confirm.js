@@ -1,27 +1,13 @@
-import Vue from 'vue'
-import ConfirmComponent from './Confirm.vue'
+import MessageBox from 'element-ui/packages/message-box'
 
-const ConfirmConstructor = Vue.extend(ConfirmComponent)
-let instance
-
-export default function Confirm (title, message) {
-
-  if (instance) {
-    instance.title = title
-    instance.message = message
-  } else {
-    instance = new ConfirmConstructor({
-      propsData: {
-        title,
-        message,
-      },
+export default async function Confirm (message, title) {
+  try {
+    const confirm = await MessageBox.confirm(message, title, {
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
     })
-    instance.$mount()
-    document.body.appendChild(instance.$el)
+    return confirm === 'confirm'
+  } catch (e) {
+    return false
   }
-
-  return new Promise(resolve => {
-    instance.$once('confirm', resolve)
-    instance.$emit('open')
-  })
 }

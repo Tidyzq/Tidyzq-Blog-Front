@@ -19,8 +19,8 @@
           span.document-title {{ document.title }}
         .document-item-detail
           span.document-author {{ document.author.username }}
-          span.document-createdAt {{ document.createdAt | fromNow }}
-          span.document-modifiedAt {{ document.modifiedAt | fromNow }}
+          span.document-createdAt {{ document.createdAtFromNow }}
+          span.document-modifiedAt {{ document.modifiedAtFromNow }}
     router-view.document-detail
 </template>
 
@@ -45,31 +45,33 @@ export default {
   },
   mounted () {
     this._interval = setInterval(() => {
-      this.$forceUpdate()
+      this.formatDocumentTime(this.documents)
     }, 1000)
   },
   beforeDestroy () {
     clearInterval(this._interval)
   },
   methods: {
-    fetchData () {
+    async fetchData () {
       this.loading = true
-      Document.get()
-        .then(({ body: documents }) => Promise.all(
-          documents.map(document =>
-            User.get({ userId: document.author })
-              .then(author => Object.assign(document, { author }))
-          )
+      try {
+        const { body: documents } = await Document.get()
+        await Promise.all(documents.map(document =>
+          User.get({ userId: document.author })
+            .then(({ body: author }) => Object.assign(document, { author }))
         ))
-        .then(documents => {
-          this.documents = documents
-          this.loading = false
-        })
+        this.formatDocumentTime(documents)
+        this.documents = documents
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
     },
-  },
-  filters: {
-    fromNow (value) {
-      return Moment(value).fromNow()
+    formatDocumentTime (documents) {
+      for (const document of documents) {
+        document.createdAtFromNow = Moment(document.createdAt).fromNow()
+        document.modifiedAtFromNow = Moment(document.modifiedAt).fromNow()
+      }
     },
   },
 }

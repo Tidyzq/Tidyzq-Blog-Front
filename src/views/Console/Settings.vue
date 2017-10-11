@@ -1,5 +1,5 @@
 <template lang='pug'>
-.settings
+.settings(v-loading='loading')
   portal(to='topbar')
     span Settings
   portal(to='topbar-buttons')
@@ -35,17 +35,26 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import draggable from 'vuedraggable'
-import cos from '@/apis/cos'
 
 export default {
+  data () {
+    return {
+      loading: false,
+    }
+  },
   computed: {
     ...mapGetters([
       'settings',
     ]),
   },
-  created () {
-    this.fetchSettings()
-    cos.get()
+  async created () {
+    this.loading = true
+    try {
+      await this.fetchSettings()
+    } catch (e) {
+      this.$error(e)
+    }
+    this.loading = false
   },
   methods: {
     ...mapActions([
@@ -61,20 +70,16 @@ export default {
     onRemoveNavigation (index) {
       this.settings.navigation.splice(index, 1)
     },
-    onSave () {
-      this.updateSettings()
-        .then(() => this.$message({
+    async onSave () {
+      try {
+        await this.updateSettings()
+        this.$message({
           type: 'success',
           message: 'Update Settings Success',
-        }))
-        .catch(err => this.onError(err))
-    },
-    onError (err) {
-      err = err && err.body ? err.body : err
-      this.$message({
-        message: err,
-        type: 'error',
-      })
+        })
+      } catch (e) {
+        this.$error(e)
+      }
     },
   },
   components: {

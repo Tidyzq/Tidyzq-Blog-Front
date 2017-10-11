@@ -1,8 +1,8 @@
 <template lang='pug'>
-  .user-detail
+  .user-detail(v-loading='loading')
     portal(to='topbar')
-       span Users
-       span {{ userId }}
+      span Users
+      span {{ userId }}
     portal(to='topbar-buttons', v-if='isSelf')
       el-button(type='success', @click='onSave') Save
     template(v-if='isSelf')
@@ -47,6 +47,7 @@ export default {
         new: '',
         newRpt: '',
       },
+      loading: false,
     }
   },
   computed: {
@@ -105,39 +106,48 @@ export default {
     })
   },
   methods: {
-    fetchData () {
-      User.get({ userId: this.userId })
-        .then(({ body: user }) => {
-          this.user = user
+    async fetchData () {
+      this.loading = true
+      try {
+        const { body: user } = await User.get({ userId: this.userId })
+        this.user = user
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
+    },
+    async onSave () {
+      try {
+        await User.update({
+          userId: this.userId,
+        }, {
+          avatar: this.user.avatar,
+          username: this.user.username,
         })
-    },
-    onSave () {
-      Promise.resolve()
-        .then(() => this.updateUser())
-        .then(() => this.$message({
+        this.$message({
           type: 'success',
-          message: 'Update User Success',
-        }))
-        .catch(err => this.onError(err))
+          message: 'Update user Success!',
+        })
+      } catch (e) {
+        this.$error(e)
+      }
     },
-    onChangePassword () {
-      this.$refs.pwdForm.validate(valid => {
-        if (valid) {
-          this.changePassword()
-            .then(() => this.$message({
-              type: 'success',
-              message: 'Change password success!',
-            }))
-            .catch(err => this.onError(err))
+    async onChangePassword () {
+      try {
+        if (await this.validatePwd()) {
+          await this.changePassword()
+          this.$message({
+            type: 'success',
+            message: 'Change password success!',
+          })
         }
-      })
+      } catch (e) {
+        this.$error(e)
+      }
     },
-    updateUser () {
-      return User.update({
-        userId: this.userId,
-      }, {
-        avatar: this.user.avatar,
-        username: this.user.username,
+    validatePwd () {
+      return new Promise(resolve => {
+        this.$refs.pwdForm.validate(resolve)
       })
     },
     changePassword () {
@@ -146,13 +156,6 @@ export default {
       }, {
         oldPassword: this.pwd.old,
         newPassword: this.pwd.new,
-      })
-    },
-    onError (err) {
-      err = err && err.body ? err.body : err
-      this.$message({
-        message: err,
-        type: 'error',
       })
     },
   },

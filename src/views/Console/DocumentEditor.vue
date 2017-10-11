@@ -50,73 +50,69 @@ export default {
     },
   },
   created () {
-    this.fetchData()
+    this.fetchDocument()
   },
   watch: {
-    showSettings (val) {
-      if (val) {
+    showSettings (show) {
+      if (show) {
         this.fetchTags()
       }
     },
   },
   methods: {
-    fetchData () {
+    async fetchDocument () {
       this.loading = true
-      this.fetchDocument()
-        .then(() => {
-          this.loading = false
-        })
-    },
-    fetchDocument () {
-      return Promise.resolve()
-        .then(() => {
-          return this.documentId ?
-            Promise.all([
-              Document.get({ documentId: this.documentId }).then(({ body: document }) => document),
-              Document.Tag.get({ documentId: this.documentId }).then(({ body: tags }) => tags.map(tag => tag.id)),
-            ]).then(([ document, tags ]) => Object.assign(document, { tags })) :
-            { title: '', markdown: '', type: 'draft' }
-        })
-        .then(document => {
-          this.document = document
-        })
-    },
-    fetchTags () {
-      return Tag.get()
-        .then(({ body: tags }) => {
-          this.tags = tags
-        })
-    },
-    saveDocument () {
-      Promise.resolve()
-        .then(() => {
-          const data = {
-            title: this.document.title,
-            type: this.document.type,
-            url: this.document.url,
-            markdown: this.document.markdown,
+
+      try {
+        if (!this.documentId) { // new document
+          this.document = {
+            title: '',
+            markdown: '',
+            type: 'draft',
           }
-          return this.documentId ?
-            Document.update({ documentId: this.documentId }, data).then(({ body: document }) => document.id) :
-            Document.save(data).then(({ body: document }) => document.id)
-        })
-        .then(id =>
-          Document.Tag.update({ documentId: id }, this.document.tags),
-        )
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: 'Save Success!',
-          })
-        })
-        .catch(err => this.onError(err))
+
+        } else { // fetch document
+          const [{ body: document }, { body: tags }] = await Promise.all([
+            Document.get({ documentId: this.documentId }),
+            Document.Tag.get({ documentId: this.documentId }),
+          ])
+          document.tags = tags.map(tag => tag.id)
+          this.document = document
+        }
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
     },
-    onError (err) {
-      err = err && err.body ? err.body : err
-      this.$message({
-        message: err,
-        type: 'error',
-      })
+    async fetchTags () {
+      const { body: tags } = await Tag.get()
+      this.tags = tags
+    },
+    async saveDocument () {
+      try {
+        const data = {
+          title: this.document.title,
+          type: this.document.type,
+          url: this.document.url,
+          markdown: this.document.markdown,
+        }
+
+        if (!this.documentId) { // new document
+          const { body: document } = await Document.save(data)
+          this.documentId = document.id
+        } else { // existed document
+          await Document.update({ documentId: this.documentId }, data)
+        }
+
+        await Document.Tag.update({ documentId: this.documentId }, this.document.tags)
+
+        this.$message({
+          type: 'success',
+          message: 'Save Document Success!',
+        })
+      } catch (e) {
+        this.$error(e)
+      }
     },
   },
 }
