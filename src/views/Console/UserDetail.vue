@@ -8,7 +8,7 @@
     template(v-if='isSelf')
       el-form
         el-form-item(label='Avatar')
-          cos-select(v-model='user.avatar')
+          avatar-select(v-model='user.avatar')
         el-form-item(label='Username')
           el-input(v-model='user.username')
         el-form-item(label='Email')

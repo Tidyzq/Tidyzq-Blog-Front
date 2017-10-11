@@ -1,13 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Users from '@/views/Console/Users'
-import UserDetail from '@/views/Console/UserDetail'
-import Documents from '@/views/Console/Documents'
-import DocumentDetail from '@/views/Console/DocumentDetail'
-import Tags from '@/views/Console/Tags'
-import TagDetail from '@/views/Console/TagDetail'
-import DocumentEditor from '@/views/Console/DocumentEditor'
-import Settings from '@/views/Console/Settings'
 
 Vue.use(Router)
 
@@ -18,39 +10,39 @@ export default new Router({
     {
       path: '/users',
       name: 'Users',
-      component: Users,
+      component: r => require.ensure([], () => r(require('@/views/Console/Users'))),
       children: [
         {
           path: ':userId',
           name: 'UserDetail',
-          component: UserDetail,
+          component: r => require.ensure([], () => r(require('@/views/Console/UserDetail'))),
         },
       ],
     }, {
       path: '/documents',
       name: 'Documents',
-      component: Documents,
+      component: r => require.ensure([], () => r(require('@/views/Console/Documents'))),
       children: [
         {
           path: ':documentId',
           name: 'DocumentDetail',
-          component: DocumentDetail,
+          component: r => require.ensure([], () => r(require('@/views/Console/DocumentDetail'))),
         },
       ],
     }, {
       path: '/tags',
       name: 'Tags',
-      component: Tags,
+      component: r => require.ensure([], () => r(require('@/views/Console/Tags'))),
       children: [
         {
           path: ':tagId',
           name: 'TagDetail',
-          component: TagDetail,
+          component: r => require.ensure([], () => r(require('@/views/Console/TagDetail'))),
         },
       ],
     }, {
       path: '/edit',
-      component: DocumentEditor,
+      component: r => require.ensure([], () => r(require('@/views/Console/DocumentEditor'))),
       children: [
         {
           path: '',
@@ -63,7 +55,7 @@ export default new Router({
     }, {
       path: '/settings',
       name: 'Settings',
-      component: Settings,
+      component: r => require.ensure([], () => r(require('@/views/Console/Settings'))),
     },
     { path: '*', redirect: '/documents' },
   ],

@@ -37,12 +37,6 @@ export default {
   min-width: 20rem;
   display: inline-block;
   vertical-align: top;
-}
-
-.cos-select__preview {
-  min-width: 20rem;
-  max-height: 20rem;
-  vertical-align: top;
   background-color: #fff;
   background-image: none;
   border-radius: 4px;
@@ -54,6 +48,12 @@ export default {
   padding: 3px;
   transition: border-color .2s cubic-bezier(.645,.045,.355,1);
   cursor: pointer;
+}
+
+.cos-select__preview {
+  min-width: 20rem;
+  max-height: 19.5rem;
+  vertical-align: top;
 }
 
 </style>

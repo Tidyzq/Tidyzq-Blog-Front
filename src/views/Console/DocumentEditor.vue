@@ -1,9 +1,9 @@
 <template lang='pug'>
 .editor-page(v-loading='loading')
   portal(to='topbar')
-    el-input(v-model='document.title')
+    input(placeholder='Title', v-model='document.title')
   portal(to='topbar-buttons')
-    el-button(@click='showSettings = !showSettings')
+    el-button(type='text', @click='showSettings = !showSettings')
       i.fa.fa-cog
     el-button(type='success', @click='saveDocument') Save
   el-collapse-transition

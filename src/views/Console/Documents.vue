@@ -8,7 +8,7 @@
       span Documents
     portal(to='topbar-buttons')
       router-link(:to=`{ name: 'DocumentEditorNew' }`)
-        el-button(type='success') Add
+        el-button(type='primary') New
   article
     .document-list(v-loading='loading')
       router-link.document-item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)

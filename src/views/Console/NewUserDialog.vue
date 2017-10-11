@@ -2,7 +2,7 @@
   el-dialog(v-loading='loading', title='New User', v-model='_visiable')
     el-form
       el-form-item(label='Avatar')
-        cos-select(v-model='user.avatar')
+        avatar-select(v-model='user.avatar')
       el-form-item(label='Username')
         el-input(placeholder='Input Username', v-model='user.username')
       el-form-item(label='Email')
