@@ -1,6 +1,6 @@
 <template lang="pug">
   el-dialog(title='Select File', :visible.sync='visiable', size='large', :before-close='onSelectCancel')
-    .cos-select__file-list
+    .cos-select__file-list(v-loading='loading')
       el-card.file-list-item(v-for='file in files', key='file.key', :body-style="{ padding: '0px' }")
         .file-list-item__preview(@click='selectedFile = file.url')
           img.file-list-item__image(:src='file.url')
@@ -30,6 +30,7 @@ export default {
       uploading: false,
       uploadProgress: 0,
       uploadStatus: '',
+      loading: false,
     }
   },
   watch: {
@@ -47,12 +48,18 @@ export default {
   },
   methods: {
     async fetchFileList () {
-      const { Contents } = await Cos.get()
-      const files = Contents.map(file => ({
-        key: file.Key,
-        url: `${config.cos.cdnUrl}/${file.Key}`,
-      }))
-      this.files = files
+      this.loading = true
+      try {
+        const { Contents } = await Cos.get()
+        const files = Contents.map(file => ({
+          key: file.Key,
+          url: `${config.cos.cdnUrl}/${file.Key}`,
+        }))
+        this.files = files
+      } catch (e) {
+        this.$error(e)
+      }
+      this.loading = false
     },
     onSelectConfirm () {
       this.$emit('select', this.selectedFile)
@@ -81,22 +88,28 @@ export default {
       }
     },
     async onSelectUpload (files) {
-      const progressHandlers = this.getUploadProgressHandlers(files)
-      this.uploading = true
-      this.uploadStatus = ''
       try {
+        const progressHandlers = this.getUploadProgressHandlers(files)
+        this.uploading = true
+        this.uploadStatus = ''
         await Promise.all(files.map((file, i) => Cos.put(file, progressHandlers(i))))
         this.uploadStatus = 'success'
         await this.fetchFileList()
         this.uploading = false
       } catch (e) {
         this.uploadStatus = 'exception'
+        this.$error(e)
       }
     },
     async onDelete (key) {
-      if (await this.$confirm('Delete file', 'Are you sure to delete this file?')) {
-        await Cos.delete(key)
-        this.fetchFileList()
+      try {
+        if (await this.$confirm('Delete file', 'Are you sure to delete this file?')) {
+          this.loading = true
+          await Cos.delete(key)
+          this.fetchFileList()
+        }
+      } catch (e) {
+        this.$error(e)
       }
     },
   },

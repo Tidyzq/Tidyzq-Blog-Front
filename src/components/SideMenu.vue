@@ -1,36 +1,29 @@
 <template lang='pug'>
 .side-menu
-  .menu-header
-    img.user-avatar(:src='currentUser.avatar', width='50')
-    .user-username {{ currentUser.username }}
-  ul.menu-body
-    li: router-link.menu-item(active-class='active', :to=`{ name: 'Users' }`)
-        i.el-icon-menu
-        | Users
-    li: router-link.menu-item(active-class='active', :to=`{ name: 'Documents' }`)
-        i.el-icon-menu
-        | Documents
-    li: router-link.menu-item(active-class='active', :to=`{ name: 'Tags' }`)
-        i.el-icon-menu
-        | Tags
-    li: router-link.menu-item(active-class='active', :to=`{ name: 'Settings' }`)
-        i.el-icon-menu
-        | Settings
-    //- li.menu-item
-    //-   router-link(active-class='active', :to=`{ name: 'Tags' }`)
-    //-     i.el-icon-menu
-    //-     | Tags
-    //- li.menu-item
-    //-   router-link(active-class='active', :to=`{ name: 'Settings' }`)
-    //-     i.el-icon-menu
-    //-     | Settings
-  ul.menu-footer
-    li: a.menu-item
-      i.el-icon-menu
+  .side-menu__header
+    h2.side-menu__blog-name {{ settings.title }}
+    .side-menu__line-mod
+    .side-menu__user
+      img.side-menu__user-avatar(:src='currentUser.avatar')
+      .side-menu__user-username {{ currentUser.username }}
+      el-button(type='text', @click='onLogout') logout
+  ul.side-menu__body
+    li: router-link.side-menu__item(active-class='active', :to=`{ name: 'Users' }`)
+      i.fa.fa-users.side-menu__item_icon
+      | Users
+    li: router-link.side-menu__item(active-class='active', :to=`{ name: 'Documents' }`)
+      i.fa.fa-book.side-menu__item_icon
+      | Documents
+    li: router-link.side-menu__item(active-class='active', :to=`{ name: 'Tags' }`)
+      i.fa.fa-tags.side-menu__item_icon
+      | Tags
+    li: router-link.side-menu__item(active-class='active', :to=`{ name: 'Settings' }`)
+      i.fa.fa-cogs.side-menu__item_icon
+      | Settings
+  ul.side-menu__footer
+    li: a.side-menu__item
+      i.el-icon-menu.side-menu__item_icon
       | Preview
-    li: a.menu-item(@click='onLogout')
-      i.el-icon-menu
-      | Logout
 </template>
 
 <script>
@@ -40,17 +33,16 @@ export default {
   computed: {
     ...mapGetters([
       'currentUser',
+      'settings',
     ]),
   },
   methods: {
     ...mapActions([
       'logout',
     ]),
-    onLogout () {
-      this.logout()
-        .then(() => {
-          window.location.assign('/console/login')
-        })
+    async onLogout () {
+      await this.logout()
+      window.location.assign('/console/login')
     },
   },
 }
@@ -62,58 +54,96 @@ export default {
   transition: all .3s ease;
   display: flex;
   flex-direction: column;
-  background-color: #1d8ce0;
-  color: #e5e9f2;
+  background-color: #f0f6f6;
+  width: 12rem;
+  border-right: 1px solid #cedfea;
 }
 
-.menu-header, .menu-footer {
+.side-menu__header, .side-menu__footer {
   flex: none;
 }
 
-.menu-body {
-  flex: auto;
+.side-menu__blog-name {
+  font-size: x-large;
+  font-weight: normal;
+  display: block;
+  margin: 0;
+  line-height: 4rem;
+  text-align: center;
+  color: #171d25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.menu-body, .menu-footer {
+.side-menu__line-mod {
+  margin: 0 1rem;
+  border-top: 1px solid #cadbe6;
+  border-bottom: 1px solid #f8fbfb;
+}
+
+.side-menu__user {
+  margin-top: 0.8rem;
+  padding-left: 1rem;
+}
+
+.side-menu__user-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #cadbe6;
+  padding: 1px;
+  border: 1px solid #f8fbfb;
+  float: left;
+  margin-right: 0.5rem;
+}
+
+.side-menu__user-username {
+  color: #171d25;
+}
+
+.side-menu__body, .side-menu__footer {
   list-style: none;
   margin: 0;
   padding-left: 0;
 }
 
-.menu-item {
+.side-menu__body {
+  margin-top: 2rem;
+  flex: auto;
+}
+
+.side-menu__item {
   cursor: pointer;
-  padding: 0 10px 0 0;
-  line-height: 32px;
+  line-height: 3rem;
   text-decoration: none;
   color: inherit;
   display: block;
   transition: all .3s ease;
+  color: #586376;
 }
 
-.menu-item:before {
+.side-menu__item:before {
   content: '';
   display: inline-block;
-  width: 4px;
-  margin-right: 6px;
-  height: 32px;
+  width: 0.4rem;
+  margin-right: 1rem;
+  height: 3rem;
   background-color: transparent;
   vertical-align: top;
 }
 
-.menu-item:hover {
-  color: #c0ccda;
+.side-menu__item:hover, .side-menu__item.active {
+  color: #2277da;
+  background-color: #d5e2ef;
 }
 
-.menu-item i {
-  margin-right: 4px;
+.side-menu__item_icon {
+  margin-right: 0.5rem;
 }
 
-.menu-item.active {
-  color: #58b7FF;
-}
-
-.menu-item.active:before {
-  background-color: #58b7FF;
+.side-menu__item.active:before {
+  background-color: #2277da;
 }
 
 </style>
