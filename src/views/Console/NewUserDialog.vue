@@ -17,8 +17,12 @@
 
 <script>
 import { User } from '@/apis'
+import AvatarSelect from '@/components/AvatarSelect'
 
 export default {
+  components: {
+    AvatarSelect,
+  },
   props: {
     visiable: Boolean,
   },

@@ -12,8 +12,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { User, Document } from '@/apis/index'
+import MarkdownView from '@/components/MarkdownView'
 
 export default {
+  components: {
+    MarkdownView,
+  },
   data () {
     return {
       document: {},

@@ -34,9 +34,14 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import draggable from 'vuedraggable'
+import Draggable from 'vuedraggable'
+import CosSelect from '@/components/CosSelect'
 
 export default {
+  components: {
+    Draggable,
+    CosSelect,
+  },
   data () {
     return {
       loading: false,
@@ -81,9 +86,6 @@ export default {
         this.$error(e)
       }
     },
-  },
-  components: {
-    draggable,
   },
 }
 </script>

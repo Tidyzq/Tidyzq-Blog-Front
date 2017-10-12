@@ -26,8 +26,14 @@
 
 <script>
 import { Document, Tag } from '@/apis/index'
+import MarkdownView from '@/components/MarkdownView'
+import MarkdownEditor from '@/components/MarkdownEditor'
 
 export default {
+  components: {
+    MarkdownView,
+    MarkdownEditor,
+  },
   data () {
     return {
       tags: [],

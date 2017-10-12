@@ -37,8 +37,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import { User } from '@/apis/index'
+import FromPlainText from '@/components/FormPlainText'
+import AvatarSelect from '@/components/AvatarSelect'
 
 export default {
+  components: {
+    FromPlainText,
+    AvatarSelect,
+  },
   data () {
     return {
       user: {},
