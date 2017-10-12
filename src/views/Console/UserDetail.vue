@@ -13,21 +13,26 @@
           el-input(v-model='user.username')
         el-form-item(label='Email')
           form-plain-text {{ user.email }}
-      el-form(:model='pwd', :rules='pwdRules', ref='pwdForm')
-        el-form-item(label='Old Password', prop='old')
-          el-input(v-model='pwd.old', type='password')
-        el-form-item(label='New Password', prop='new')
-          el-input(v-model='pwd.new', type='password')
-        el-form-item(label='Repeat New Password', prop='newRpt')
-          el-input(v-model='pwd.newRpt', type='password')
         el-form-item
-          div
-            el-button.block(type='danger', @click='onChangePassword') Change Password
+          div: el-button.block(type='warning', @click='showChangePasswordDialog = true') Change Password
+        el-form-item
+          div: el-button.block(type='danger', @click='onDelete') Delete User
+      el-dialog(v-loading='loading', title='Change Password', v-model='showChangePasswordDialog')
+        el-form(:model='pwd', :rules='pwdRules', ref='pwdForm')
+          el-form-item(label='Old Password', prop='old')
+            el-input(v-model='pwd.old', type='password')
+          el-form-item(label='New Password', prop='new')
+            el-input(v-model='pwd.new', type='password')
+          el-form-item(label='Repeat New Password', prop='newRpt')
+            el-input(v-model='pwd.newRpt', type='password')
+        span.dialog-footer(slot='footer')
+          el-button(@click='showChangePasswordDialog = false') Cancel
+          el-button(type='primary', @click='onChangePassword') Confirm
     template(v-else)
       el-form
         el-form-item(label='Avatar')
           form-plain-text
-            img(:src='user.avatar', width='100')
+            img.user-detail__avatar(:src='user.avatar', width='100')
         el-form-item(label='Username')
           form-plain-text {{ user.username }}
         el-form-item(label='Email')
@@ -35,7 +40,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { User } from '@/apis/index'
 import FormPlainText from '@/components/FormPlainText'
 import AvatarSelect from '@/components/AvatarSelect'
@@ -48,6 +53,7 @@ export default {
   data () {
     return {
       user: {},
+      showChangePasswordDialog: false,
       pwd: {
         old: '',
         new: '',
@@ -104,6 +110,15 @@ export default {
     userId () {
       this.fetchData()
     },
+    showChangePasswordDialog (val) {
+      if (val) {
+        Object.assign(this.pwd, {
+          old: '',
+          new: '',
+          newRpt: '',
+        })
+      }
+    },
   },
   created () {
     this.fetchData()
@@ -112,6 +127,9 @@ export default {
     })
   },
   methods: {
+    ...mapActions([
+      'logout',
+    ]),
     async fetchData () {
       this.loading = true
       try {
@@ -141,28 +159,36 @@ export default {
     async onChangePassword () {
       try {
         if (await this.validatePwd()) {
-          await this.changePassword()
+          await User.Password.update({
+            userId: this.userId,
+          }, {
+            oldPassword: this.pwd.old,
+            newPassword: this.pwd.new,
+          })
           this.$message({
             type: 'success',
             message: 'Change password success!',
           })
+          this.showChangePasswordDialog = false
         }
       } catch (e) {
         this.$error(e)
       }
     },
     validatePwd () {
-      return new Promise(resolve => {
-        this.$refs.pwdForm.validate(resolve)
-      })
+      return new Promise(resolve => this.$refs.pwdForm.validate(resolve))
     },
-    changePassword () {
-      return User.Password.update({
-        userId: this.userId,
-      }, {
-        oldPassword: this.pwd.old,
-        newPassword: this.pwd.new,
-      })
+    async onDelete () {
+      try {
+        if (await this.$comfirm('Are you sure to delete this user?', 'Delete User')) {
+          await User.delete({ userId: this.userId })
+          // logout and return to login page after delete
+          this.logout()
+          window.location.assign('/console/login')
+        }
+      } catch (e) {
+        this.$error(e)
+      }
     },
   },
 }
@@ -170,8 +196,13 @@ export default {
 
 <style scoped>
 .user-detail {
-  background: green;
-  overflow-x: hidden;
-  overflow-y: auto;
+  padding: 0.5rem 1rem;
+  overflow: auto;
+}
+
+.user-detail__avatar {
+  min-width: 10rem;
+  max-width: 100%;
+  max-height: 10rem;
 }
 </style>

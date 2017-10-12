@@ -61,9 +61,5 @@ export default {
 </script>
 
 <style>
-.preview {
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+
 </style>

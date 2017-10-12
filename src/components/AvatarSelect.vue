@@ -51,7 +51,7 @@ export default {
 }
 
 .avatar-select__preview {
-  min-width: 10rem;
+  min-width: 9.5rem;
   max-height: 9.5rem;
   vertical-align: top;
 }

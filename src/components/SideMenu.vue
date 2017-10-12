@@ -41,7 +41,7 @@ export default {
       'logout',
     ]),
     async onLogout () {
-      await this.logout()
+      this.logout()
       window.location.assign('/console/login')
     },
   },

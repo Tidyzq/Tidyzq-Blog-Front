@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ParticlesJs from 'particles.js'
+import ParticlesJs from 'exports-loader?particlesJS=window.particlesJS,pJSDom=window.pJSDom!particles.js'
 
 export default {
   props: {

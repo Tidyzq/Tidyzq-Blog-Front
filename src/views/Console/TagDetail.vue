@@ -89,8 +89,7 @@ export default {
 
 <style scoped>
 .tag-detail {
-  background: green;
-  overflow-x: hidden;
-  overflow-y: auto;
+  padding: 0.5rem 1rem;
+  overflow: auto;
 }
 </style>

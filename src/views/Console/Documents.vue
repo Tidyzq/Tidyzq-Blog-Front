@@ -11,15 +11,17 @@
         el-button(type='primary') New
   article
     .document-list(v-loading='loading')
-      router-link.document-list__item(v-for='document in documents', key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)
-        .document-list__type
-          .document-list__type--draft(v-if="document.type === 'draft'") Draft
-          .document-list__type--post(v-else-if="document.type === 'post'") Post
-          .document-list__type--page(v-else) Page
-        .document-list__title {{ document.title }}
-        .document-list__detail
-          .document-list__author {{ document.author.username }}
-          .document-list__modifiedAt updated {{ document.modifiedAtFromNow }}
+      template(v-for='document in documents')
+        router-link.document-list__item(key='document.id', :to=`{ name: 'DocumentDetail', params: { documentId: document.id } }`)
+          .document-list__type
+            .document-list__type--draft(v-if="document.type === 'draft'") Draft
+            .document-list__type--post(v-else-if="document.type === 'post'") Post
+            .document-list__type--page(v-else) Page
+          .document-list__title {{ document.title }}
+          .document-list__detail
+            .document-list__author {{ document.author.username }}
+            .document-list__modifiedAt updated {{ document.modifiedAtFromNow }}
+        .document-list__line-mod(key='document.id')
     router-view.document-detail
 </template>
 
@@ -110,6 +112,10 @@ article {
   flex: 2 1 auto;
 }
 
+.show-detail .document-list {
+  border-right: solid 1px #cadbe6
+}
+
 @media only screen and (max-width: 991px) {
   .show-detail .document-list, .show-list .document-detail {
     display: none;
@@ -122,6 +128,10 @@ article {
   cursor: pointer;
   height: 3rem;
   padding: 0.5rem 1rem;
+}
+
+.document-list__line-mod {
+  margin: 0 1rem;
   border-bottom: solid 1px #cadbe6;
 }
 

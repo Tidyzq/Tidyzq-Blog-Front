@@ -13,10 +13,11 @@
   new-tag-dialog(:visiable.sync='showNewTagDialog', @created='onCreateSuccess')
   article
     .tag-list(v-loading='loading')
-      .tag-list-item(v-for='tag in tags', key='tag.id')
-        router-link(:to=`{ name: 'TagDetail', params: { tagId: tag.id } }`)
-          span {{ tag.id }}
-          span {{ tag.name }}
+      template(v-for='tag in tags')
+        router-link.tag-list__item(key='tag.id', :to=`{ name: 'TagDetail', params: { tagId: tag.id } }`)
+          .tag-list__name {{ tag.name }}
+          .tag-list__url /{{ tag.url }}
+        .tag-list__line-mod(key='tag.id')
     router-view.tag-detail
 </template>
 
@@ -78,8 +79,19 @@ article {
 
 .tag-list, .tag-detail {
   width: 100%;
-  flex: auto;
-  overflow: hidden;
+  overflow: auto;
+}
+
+.tag-list {
+  flex: 1 2 auto;
+}
+
+.tag-detail {
+  flex: 2 1 auto;
+}
+
+.show-detail .tag-list {
+  border-right: solid 1px #cadbe6
 }
 
 @media only screen and (max-width: 991px) {
@@ -87,4 +99,34 @@ article {
     display: none;
   }
 }
+
+.tag-list__item {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  height: 3rem;
+  padding: 0.5rem 1rem 0.5rem 2rem;
+}
+
+.tag-list__line-mod {
+  margin: 0 1rem;
+  border-bottom: solid 1px #cadbe6;
+}
+
+.tag-list__name {
+  line-height: 2rem;
+  font-size: 1.1rem;
+  color: #171d25;
+}
+
+.tag-list__item:hover {
+  background: #EAF3FD;
+}
+
+.tag-list__url {
+  color: #a2a2a2;
+  line-height: 1rem;
+  font-size: 0.8rem;
+}
+
 </style>

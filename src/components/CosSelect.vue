@@ -51,7 +51,7 @@ export default {
 }
 
 .cos-select__preview {
-  min-width: 20rem;
+  min-width: 19.5rem;
   max-width: 100%;
   max-height: 19.5rem;
   vertical-align: top;

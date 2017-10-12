@@ -11,11 +11,13 @@
   new-user-dialog(:visiable.sync='showNewUserDialog', @created='fetchData')
   article
     .user-list(v-loading='loading')
-      router-link.user-list__item(v-for='user in users', key='user.id', :to=`{ name: 'UserDetail', params: { userId: user.id } }`)
-        img.user-list__avatar(:src='user.avatar')
-        .user-list__username {{ user.username }}
-        .user-list__detail
-          .user-list__email {{ user.email }}
+      template(v-for='user in users')
+        router-link.user-list__item(key='user.id', :to=`{ name: 'UserDetail', params: { userId: user.id } }`)
+          img.user-list__avatar(:src='user.avatar')
+          .user-list__username {{ user.username }}
+          .user-list__detail
+            .user-list__email {{ user.email }}
+        .user-list__line-mod(key='user.id')
     router-view.user-detail
 </template>
 
@@ -81,6 +83,10 @@ article {
   flex: 2 1 auto;
 }
 
+.show-detail .user-list {
+  border-right: solid 1px #cadbe6
+}
+
 @media only screen and (max-width: 991px) {
   .show-detail .user-list, .show-list .user-detail {
     display: none;
@@ -92,8 +98,11 @@ article {
   text-decoration: none;
   cursor: pointer;
   height: 3rem;
-  line-height: 3rem;
   padding: 0.5rem 1rem;
+}
+
+.user-list__line-mod {
+  margin: 0 1rem;
   border-bottom: solid 1px #cadbe6;
 }
 
