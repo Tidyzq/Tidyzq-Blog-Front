@@ -32,6 +32,7 @@ export default {
     return {
       documents: [],
       loading: false,
+      fetchingAuthor: {},
     }
   },
   computed: {
@@ -56,7 +57,7 @@ export default {
       try {
         const { body: documents } = await Document.get()
         await Promise.all(documents.map(document =>
-          User.get({ userId: document.author })
+          this.fetchAuthor(document.author)
             .then(({ body: author }) => Object.assign(document, { author }))
         ))
         this.formatDocumentTime(documents)
@@ -66,9 +67,18 @@ export default {
       }
       this.loading = false
     },
+    fetchAuthor (author) {
+      // compact multiple author fetching into one
+      if (!this.fetchingAuthor[author]) {
+        this.fetchingAuthor[author] = User.get({ userId: author }).then(data => {
+          this.fetchingAuthor[author] = undefined
+          return data
+        })
+      }
+      return this.fetchingAuthor[author]
+    },
     formatDocumentTime (documents) {
       for (const document of documents) {
-        // document.createdAtFromNow = Moment(document.createdAt).fromNow()
         document.modifiedAtFromNow = Moment(document.modifiedAt).fromNow()
       }
     },

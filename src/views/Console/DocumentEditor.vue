@@ -111,7 +111,7 @@ export default {
         } else { // existed document
           await Promise.all([
             Document.update({ documentId: this.documentId }, data),
-            Document.Tag.update({ documentId: this.documentId }, this.document.tags)
+            Document.Tag.update({ documentId: this.documentId }, this.document.tags),
           ])
         }
 

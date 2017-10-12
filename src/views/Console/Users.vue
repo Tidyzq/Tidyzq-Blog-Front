@@ -14,6 +14,8 @@
       router-link.user-list__item(v-for='user in users', key='user.id', :to=`{ name: 'UserDetail', params: { userId: user.id } }`)
         img.user-list__avatar(:src='user.avatar')
         .user-list__username {{ user.username }}
+        .user-list__detail
+          .user-list__email {{ user.email }}
     router-view.user-detail
 </template>
 
@@ -104,11 +106,27 @@ article {
   height: 3rem;
   border-radius: 50%;
   float: left;
-  margin-right: 0.5rem;
+  margin: 0 0.5rem;
 }
 
 .user-list__username {
-  color: #2277da;
+  line-height: 2rem;
+  font-size: 1.1rem;
+  color: #171d25;
+}
+
+.user-list__detail {
+  color: #a2a2a2;
+  line-height: 1rem;
+  font-size: 0.8rem;
+}
+
+.user-list__detail > * {
+  display: inline;
+}
+
+.user-list__detail > * + * {
+  margin-left: 0.5rem;
 }
 
 </style>

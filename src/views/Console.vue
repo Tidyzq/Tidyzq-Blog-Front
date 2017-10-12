@@ -10,8 +10,14 @@
 import { mapActions } from 'vuex'
 import SideMenuEvent from '@/event-buses/SideMenu'
 import AuthorizationEvent from '@/event-buses/Authorization'
+import SideMenu from '@/components/SideMenu'
+import Topbar from '@/components/Topbar'
 
 export default {
+  components: {
+    SideMenu,
+    Topbar,
+  },
   data () {
     return {
       openSidebar: false,

@@ -1,4 +1,5 @@
-import MessageBox from 'element-ui/packages/message-box'
+import ElementUI from 'element-ui'
+const MessageBox = ElementUI.MessageBox
 
 export default async function Confirm (message, title) {
   try {

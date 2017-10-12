@@ -1,9 +1,21 @@
-import Message from 'element-ui/packages/message'
+import ElementUI from 'element-ui'
+const Message = ElementUI.Message
 
 export default function onError (err) {
-  err = err && err.body ? err.body : err
+  let message
+  if (err instanceof Response || (err && err.body)) { // vue-resource response
+    message = err.body
+  } else if (err instanceof Error) {
+    message = err.message
+  } else {
+    try {
+      message = JSON.stringify(err)
+    } catch (e) {
+      message = err
+    }
+  }
   Message({
-    message: err,
+    message,
     type: 'error',
   })
 }
