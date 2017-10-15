@@ -11,23 +11,30 @@ export default {
         return
       }
       if (this.getRealScroll() !== this._scroll) {
-        const wrapper = () => {
-          const delay = 250, now = Date.now()
-          if (!this._throttleScroll || this._throttleScroll + delay <= now) {
-            this._throttleScroll = now
+        const delay = 250
+        if (!this._throttleScroll) {
+          this._throttleScroll = setTimeout(() => {
+            this._throttleScroll = null
             this._scroll = this.getRealScroll()
-            setTimeout(() => {
-              this._throttleScroll = null
-              if (this._throttledScroll) {
-                this._throttledScroll = false
-                wrapper()
-              }
-            }, delay)
-          } else {
-            this._throttledScroll = true
-          }
+          }, delay)
         }
-        wrapper()
+        // const wrapper = () => {
+        //   const delay = 250, now = Date.now()
+        //   if (!this._throttleScroll || this._throttleScroll + delay <= now) {
+        //     this._throttleScroll = now
+        //     this._scroll = this.getRealScroll()
+        //     setTimeout(() => {
+        //       this._throttleScroll = null
+        //       if (this._throttledScroll) {
+        //         this._throttledScroll = false
+        //         wrapper()
+        //       }
+        //     }, delay)
+        //   } else {
+        //     this._throttledScroll = true
+        //   }
+        // }
+        // wrapper()
       }
     },
     scrollTo (val) {

@@ -8,16 +8,18 @@
           el-input(type='password', placeholder='Password', v-model='password')
         el-form-item.login-btn-wrapper
           el-button.login-btn(nativeType='submit', type='primary', @click.prevent='OnSubmit') Login
-    particle.background
+    //- particle.background
+    .background
+      grid
 </template>
 
 <script>
-import Particle from '@/components/Particle'
+import Grid from '@/components/Grid'
 import { mapActions } from 'vuex'
 
 export default {
   components: {
-    Particle,
+    Grid,
   },
   data () {
     return {
@@ -70,8 +72,7 @@ html, body {
 
 </style>
 
-<style lang='less' scoped>
-@import "../less/variables.less";
+<style scoped>
 
 .login-page {
   height: 100%;
@@ -87,9 +88,10 @@ html, body {
 }
 
 .login-form {
-  background: lighten(@color-grey, 10%);
+  background: white;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.2rem 0.4rem #000;
 }
 
 .login-btn-wrapper {
@@ -101,7 +103,6 @@ html, body {
 }
 
 .background {
-  background: @color-blue;
   overflow: hidden;
   width: 100%;
   height: 100%;

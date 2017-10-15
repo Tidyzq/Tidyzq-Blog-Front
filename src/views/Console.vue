@@ -1,5 +1,5 @@
 <template lang='pug'>
-.console-page
+.console-page(@keyup.save='onSave')
   side-menu.sidebar(:class=`{ open: openSidebar }`)
   .main-content(@click='onClickMainContent')
     topbar.topbar
@@ -61,6 +61,9 @@ export default {
     },
     onAuthFail () {
       window.location.assign('/console/login')
+    },
+    onSave () {
+      console.log('save')
     },
   },
 }

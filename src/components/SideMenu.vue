@@ -6,7 +6,7 @@
     .side-menu__user
       img.side-menu__user-avatar(:src='currentUser.avatar')
       .side-menu__user-username {{ currentUser.username }}
-      el-button(type='text', @click='onLogout') logout
+      el-button.side-menu__user-logout(type='text', @click='onLogout') logout
   ul.side-menu__body
     li: router-link.side-menu__item(active-class='active', :to=`{ name: 'Users' }`)
       i.fa.fa-users.side-menu__item_icon
@@ -21,7 +21,7 @@
       i.fa.fa-cogs.side-menu__item_icon
       | Settings
   ul.side-menu__footer
-    li: a.side-menu__item
+    li: a.side-menu__item(href='/')
       i.el-icon-menu.side-menu__item_icon
       | Preview
 </template>
@@ -92,14 +92,19 @@ export default {
   height: 3rem;
   border-radius: 50%;
   background: #cadbe6;
-  padding: 1px;
-  border: 1px solid #f8fbfb;
   float: left;
   margin-right: 0.5rem;
 }
 
 .side-menu__user-username {
   color: #171d25;
+  font-size: 1.1rem;
+  line-height: 2rem;
+}
+
+.side-menu__user-logout {
+  padding: 0;
+  line-height: 1rem;
 }
 
 .side-menu__body, .side-menu__footer {

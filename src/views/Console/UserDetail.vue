@@ -32,7 +32,8 @@
       el-form
         el-form-item(label='Avatar')
           form-plain-text
-            img.user-detail__avatar(:src='user.avatar', width='100')
+            .user-detail__avatar-box
+              img.user-detail__avatar(:src='user.avatar', width='100')
         el-form-item(label='Username')
           form-plain-text {{ user.username }}
         el-form-item(label='Email')
@@ -200,9 +201,27 @@ export default {
   overflow: auto;
 }
 
-.user-detail__avatar {
+.user-detail__avatar-box {
+  height: 10rem;
   min-width: 10rem;
-  max-width: 100%;
-  max-height: 10rem;
+  display: inline-block;
+  vertical-align: top;
+  background-color: #fff;
+  background-image: none;
+  border-radius: 4px;
+  border: 1px solid #bfcbd9;
+  box-sizing: border-box;
+  color: #1f2d3d;
+  font-size: inherit;
+  outline: 0;
+  padding: 3px;
+  transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+  cursor: pointer;
+}
+
+.user-detail__avatar {
+  min-width: 9.5rem;
+  max-height: 9.5rem;
+  vertical-align: top;
 }
 </style>

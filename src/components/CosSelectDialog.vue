@@ -22,8 +22,12 @@
 <script>
 import { Cos } from '@/apis'
 import config from '@/config'
+import FileSelect from './FileSelect'
 
 export default {
+  components: {
+    FileSelect,
+  },
   data () {
     return {
       files: [],

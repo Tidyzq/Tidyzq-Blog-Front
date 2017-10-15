@@ -1,5 +1,5 @@
 <template lang='pug'>
-.settings(v-loading='loading')
+.settings(v-loading='loading', @keyup.save='onSave')
   portal(to='topbar')
     span Settings
   portal(to='topbar-buttons')

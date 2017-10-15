@@ -25,5 +25,5 @@ new Vue({
   el: '#app',
   router,
   store,
-  render (h) { return h(Console) },
+  render: h => h(Console),
 })

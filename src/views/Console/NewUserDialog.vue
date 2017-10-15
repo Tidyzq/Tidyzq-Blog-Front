@@ -28,7 +28,13 @@ export default {
   },
   data () {
     return {
-      user: {},
+      user: {
+        avatar: '',
+        username: '',
+        email: '',
+        password: '',
+        rptPassword: '',
+      },
       loading: false,
     }
   },
@@ -46,7 +52,13 @@ export default {
     visiable (val) {
       if (val) {
         this.upload = {}
-        this.user = {}
+        Object.assign(this.user, {
+          avatar: '',
+          username: '',
+          email: '',
+          password: '',
+          rptPassword: '',
+        })
         this.loading = false
       }
     },
