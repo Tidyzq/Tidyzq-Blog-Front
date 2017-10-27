@@ -67,7 +67,7 @@ export default {
     async onCreate () {
       this.loading = true
       try {
-        await User.save(this.user)
+        await User.create(this.user)
         this.$emit('created')
         this._visiable = false
       } catch (e) {

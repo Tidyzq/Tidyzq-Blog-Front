@@ -49,31 +49,8 @@ Object.keys(proxyTable).forEach(function (context) {
   app.use(proxyMiddleware(options.filter || context, options))
 })
 
-var router = express.Router()
-Object.keys(routerTable).forEach(function (routerPath) {
-  var options = routerTable[routerPath]
-  if (options.sendFile) {
-    console.log(routerPath + ' -> sendFile("' + options.sendFile + '")');
-    var filename = path.join(compiler.outputPath, options.sendFile);
-    router.get(routerPath, function (req, res, next) {
-      compiler.outputFileSystem.readFile(filename, function (err, result) {
-        if (err) return next(err);
-        res.set('content-type','text/html');
-        res.send(result);
-        res.end();
-      });
-    });
-  } else if (options.redirect) {
-    console.log(routerPath + ' -> redirect("' + options.redirect + '")');
-    router.get(routerPath, function (req, res, next) {
-      res.redirect(options.redirect);
-    });
-  }
-})
-app.use(router)
-
 // handle fallback for HTML5 history API
-app.use(require('connect-history-api-fallback')())
+// app.use(require('connect-history-api-fallback')())
 
 // serve webpack bundle output
 app.use(devMiddleware)
@@ -85,6 +62,29 @@ app.use(hotMiddleware)
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
+
+var router = express.Router()
+
+function sendFile (filename) {
+  return function (req, res, next) {
+    compiler.outputFileSystem.readFile(path.join(compiler.outputPath, filename), (err, result) => {
+      if (err) { return next(err) }
+      res.set('content-type', 'text/html')
+      res.send(result)
+      res.end()
+    })
+  }
+}
+
+router.get(/^\/blog(\/.*)?$/, sendFile('blog.html'))
+
+router.get('/console/login', sendFile('login.html'))
+
+router.get(/^\/console(\/.*)?$/, sendFile('console.html'))
+
+router.get('*', (req, res) => res.redirect('/blog'))
+
+app.use(router)
 
 var uri = 'http://localhost:' + port
 

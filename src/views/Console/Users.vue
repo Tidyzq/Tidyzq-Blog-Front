@@ -48,7 +48,7 @@ export default {
     async fetchData () {
       this.loading = true
       try {
-        const { body: users } = await User.get()
+        const { data: users } = await User.getAll()
         this.users = users
       } catch (e) {
         this.$error(e)

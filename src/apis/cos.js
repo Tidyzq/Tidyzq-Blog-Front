@@ -1,44 +1,41 @@
-import Vue from 'vue'
-import config from '@/config'
-import xml from '@/utils/xml'
+import Axios from 'axios'
+import config from '../config'
+import { xml2js } from '../utils/xml'
 
-const Token = Vue.resource('/api/cos/token')
+export const Token = {
+  get: (method, key) => Axios.get('/api/cos/token', { params: { method, key } }),
+}
 
-function getAuthorization (method, key) {
+async function getAuthorization (method, key) {
   method = (method || 'get').toLowerCase()
   key = key || ''
-  return Token.get({ method, key })
-    .then(({ body: { token } }) => token)
+  const { data: { token } } = await Token.get(method, key)
+  return token
 }
 
 const url = config.cos.apiUrl
 
-function listBucket () {
-  return getAuthorization()
-    .then(token => Vue.http.get(url, { headers: { Authorization: token } }))
-    .then(({ body }) => xml(body))
-    .then(({ ListBucketResult }) => ListBucketResult)
-}
-
-function putObject (key, file, progress) {
-  if (arguments.length < 3) {
-    progress = file
-    file = key
-    key = (file || {}).name
-  }
-  return getAuthorization('put', key)
-    .then(token => Vue.http.put(`${url}/${key}`, file, { headers: { Authorization: token, 'Content-Type': file.type }, progress }))
-    .then(() => `${config.cos.cdnUrl}/${key}`)
-}
-
-function deleteObject (key) {
-  return getAuthorization('delete', key)
-    .then(token => Vue.http.delete(`${url}/${key}`, { headers: { Authorization: token } }))
-}
-
 export default {
   Token,
-  get: listBucket,
-  put: putObject,
-  delete: deleteObject,
+  async get () {
+    const token = await getAuthorization('get', '')
+    const { data } = await Axios.get(url, { headers: { Authorization: token } })
+    const { ListBucketResult: result } = await xml2js(data)
+    return result
+  },
+  async put (key, file, progress) {
+    if (arguments.length < 3) {
+      progress = file
+      file = key
+      key = (file || {}).name
+    }
+    const token = await getAuthorization('put', key)
+    await Axios.put(`${url}/${key}`, file, { headers: { Authorization: token, 'Content-Type': file.type }, onUploadProgress: progress })
+    return `${config.cos.cdnUrl}/${key}`
+  },
+  async delete (key) {
+    const token = await getAuthorization('delete', key)
+    await Axios.delete(`${url}/${key}`, { headers: { Authorization: token }})
+    return `${config.cos.cdnUrl}/${key}`
+  },
 }

@@ -1,3 +1,4 @@
+var path = require('path')
 var utils = require('./utils')
 var webpack = require('webpack')
 var config = require('../config')
@@ -5,6 +6,10 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
 
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
@@ -24,20 +29,26 @@ var webpackConfig= merge(baseWebpackConfig, {
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new FriendlyErrorsPlugin()
-  ]
-})
-
-Object.keys(config.build.entries).forEach(function (chunk) {
-  var chunkConfig = config.build.entries[chunk]
-  webpackConfig.plugins.push(
+    new FriendlyErrorsPlugin(),
     new HtmlWebpackPlugin({
-      filename: chunkConfig.filename || (chunk + '.html'),
-      template: chunkConfig.template,
+      filename: 'blog.html',
+      template: resolve('src/templates/blog.template.html'),
       inject: true,
-      chunks: [ 'common', chunk ],
-    })
-  )
+      chunks: [ 'common', 'blog' ],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'login.html',
+      template: resolve('src/templates/login.template.html'),
+      inject: true,
+      chunks: [ 'common', 'login' ],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'console.html',
+      template: resolve('src/templates/console.template.html'),
+      inject: true,
+      chunks: [ 'common', 'console' ],
+    }),
+  ]
 })
 
 module.exports = webpackConfig

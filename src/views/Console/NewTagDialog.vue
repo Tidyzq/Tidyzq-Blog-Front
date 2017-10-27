@@ -45,7 +45,7 @@ export default {
     async onCreate () {
       this.loading = true
       try {
-        await Tag.save(this.tag)
+        await Tag.create(this.tag)
         this.$emit('created')
         this._visiable = false
       } catch (e) {

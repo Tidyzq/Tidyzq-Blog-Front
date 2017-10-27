@@ -134,7 +134,7 @@ export default {
     async fetchData () {
       this.loading = true
       try {
-        const { body: user } = await User.get({ userId: this.userId })
+        const { data: user } = await User.getById(this.userId)
         this.user = user
       } catch (e) {
         this.$error(e)
@@ -143,9 +143,7 @@ export default {
     },
     async onSave () {
       try {
-        await User.update({
-          userId: this.userId,
-        }, {
+        await User.update(this.userId, {
           avatar: this.user.avatar,
           username: this.user.username,
         })
@@ -160,9 +158,7 @@ export default {
     async onChangePassword () {
       try {
         if (await this.validatePwd()) {
-          await User.Password.update({
-            userId: this.userId,
-          }, {
+          await User.changePassword(this.userId, {
             oldPassword: this.pwd.old,
             newPassword: this.pwd.new,
           })
@@ -182,7 +178,7 @@ export default {
     async onDelete () {
       try {
         if (await this.$comfirm('Are you sure to delete this user?', 'Delete User')) {
-          await User.delete({ userId: this.userId })
+          await User.delete(this.userId)
           // logout and return to login page after delete
           this.logout()
           window.location.assign('/console/login')

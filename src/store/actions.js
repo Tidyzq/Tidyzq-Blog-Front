@@ -2,7 +2,7 @@ import { Auth, Setting } from '@/apis'
 import * as storage from './storage'
 
 export async function login ({ commit, dispatch }, user, toSession) {
-  const { body: { accessToken, user: currentUser } } = await Auth.login({
+  const { data: { accessToken, user: currentUser } } = await Auth.login({
     email: user.email,
     password: user.password,
   })
@@ -58,7 +58,7 @@ let fetchingSettings = null
 export function fetchSettings ({ commit }) {
   if (!fetchingSettings) {
     fetchingSettings = Setting.get()
-      .then(({ body: settings }) => {
+      .then(({ data: settings }) => {
         fetchingSettings = null
         commit('UPDATE_SETTINGS', settings)
       })

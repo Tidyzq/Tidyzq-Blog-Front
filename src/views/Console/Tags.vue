@@ -48,7 +48,7 @@ export default {
     async fetchData () {
       this.loading = true
       try {
-        const { body: tags } = await Tag.get()
+        const { data: tags } = await Tag.getAll()
         this.tags = tags
       } catch (e) {
         this.$error(e)

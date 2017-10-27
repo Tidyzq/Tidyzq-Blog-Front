@@ -2,8 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Console from '@/views/Console'
-import router from '@/router/console'
-import store from '@/store'
+import { createRouter } from '@/router/console'
+import { createStore } from '@/store'
 import ElementUI from 'element-ui'
 import Portal from 'portal-vue'
 import 'element-ui/lib/theme-default/index.css'
@@ -20,10 +20,13 @@ Vue.use(Portal)
 Vue.prototype.$confirm = Confirm
 Vue.prototype.$error = Error
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(Console),
-})
+export function createApp () {
+  const router = createRouter()
+  const store = createStore()
+  const app = new Vue({
+    router,
+    store,
+    render: h => h(Console),
+  })
+  return { app, router, store }
+}

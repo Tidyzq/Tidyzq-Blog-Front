@@ -38,7 +38,7 @@ export default {
   methods: {
     async fetchData () {
       try {
-        const { body: tag } = await Tag.Id.get({ tagId: this.tagId })
+        const { data: tag } = await Tag.getById(this.tagId )
         this.tag = tag
       } catch (e) {
         if (e && e.status && e.status === 404) {
@@ -50,9 +50,7 @@ export default {
     },
     async onSave () {
       try {
-        await Tag.Id.update({
-          tagId: this.tagId,
-        }, {
+        await Tag.updateById(this.tagId, {
           name: this.tag.name,
           url: this.tag.url,
         })
@@ -67,9 +65,7 @@ export default {
     async onDelete () {
       try {
         if (await this.$confirm('Are you sure to delete this tag?', 'Delete Tag')) {
-          await Tag.Id.delete({
-            tagId: this.tagId,
-          })
+          await Tag.deleteById(this.tagId)
           this.$message({
             type: 'success',
             message: 'Delete Tag Success',

@@ -9,9 +9,7 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    blog: resolve('src/entries/blog.front.js'),
-    login: resolve('src/entries/login.front.js'),
-    console: resolve('src/entries/console.front.js'),
+    blog: resolve('src/entries/blog.server.js'),
   },
   output: {
     path: config.build.assetsRoot,

@@ -1,35 +1,9 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
 
-var routerTable = {
-  '/blog': { sendFile: 'blog.html' },
-  '/blog/*': { sendFile: 'blog.html' },
-  '/console': { sendFile: 'console.html' },
-  '/console/login': { sendFile: 'login.html' },
-  '/console/*': { sendFile: 'console.html' },
-  '/': { redirect: '/blog' }
-}
-
 module.exports = {
   build: {
     env: require('./prod.env'),
-    entries: {
-      blog: {
-        template: path.resolve(__dirname, '../src/templates/blog.template.html'),
-        entry: path.resolve(__dirname, '../src/entries/blog.js'),
-        filename: 'blog.html'
-      },
-      login: {
-        template: path.resolve(__dirname, '../src/templates/login.template.html'),
-        entry: path.resolve(__dirname, '../src/entries/login.js'),
-        filename: 'login.html'
-      },
-      console: {
-        template: path.resolve(__dirname, '../src/templates/console.template.html'),
-        entry: path.resolve(__dirname, '../src/entries/console.js'),
-        filename: 'console.html'
-      }
-    },
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -55,7 +29,6 @@ module.exports = {
     proxyTable: {
       '/api': 'http://localhost:1337',
     },
-    routerTable: routerTable,
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
@@ -66,6 +39,5 @@ module.exports = {
   publish: {
     env: require('./prod.env'),
     prot: 1338,
-    routerTable: routerTable,
   }
 }

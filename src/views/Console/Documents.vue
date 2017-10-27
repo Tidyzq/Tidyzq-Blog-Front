@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { User, Document } from '@/apis/index'
+import { User, Document } from '../../apis'
 import Moment from 'moment'
 
 export default {
@@ -57,10 +57,10 @@ export default {
     async fetchData () {
       this.loading = true
       try {
-        const { body: documents } = await Document.get()
+        const { data: documents } = await Document.getAll()
         await Promise.all(documents.map(document =>
           this.fetchAuthor(document.author)
-            .then(({ body: author }) => Object.assign(document, { author }))
+            .then(({ data: author }) => Object.assign(document, { author }))
         ))
         this.formatDocumentTime(documents)
         this.documents = documents
@@ -72,7 +72,7 @@ export default {
     fetchAuthor (author) {
       // compact multiple author fetching into one
       if (!this.fetchingAuthor[author]) {
-        this.fetchingAuthor[author] = User.get({ userId: author }).then(data => {
+        this.fetchingAuthor[author] = User.getById(author).then(data => {
           this.fetchingAuthor[author] = undefined
           return data
         })

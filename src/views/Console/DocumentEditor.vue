@@ -68,7 +68,6 @@ export default {
   methods: {
     async fetchDocument () {
       this.loading = true
-
       try {
         if (!this.documentId) { // new document
           this.document = {
@@ -78,11 +77,10 @@ export default {
             type: 'draft',
             tags: [],
           }
-
         } else { // fetch document
-          const [{ body: document }, { body: tags }] = await Promise.all([
-            Document.get({ documentId: this.documentId }),
-            Document.Tag.get({ documentId: this.documentId }),
+          const [{ data: document }, { data: tags }] = await Promise.all([
+            Document.getById(this.documentId),
+            Document.Tag.getAll(this.documentId),
           ])
           document.tags = tags.map(tag => tag.id)
           this.document = document
@@ -93,7 +91,7 @@ export default {
       this.loading = false
     },
     async fetchTags () {
-      const { body: tags } = await Tag.get()
+      const { data: tags } = await Tag.getAll()
       this.tags = tags
     },
     async saveDocument () {
@@ -106,12 +104,12 @@ export default {
         }
 
         if (!this.documentId) { // new document
-          const { body: document } = await Document.save(data)
-          await Document.Tag.update({ documentId: document.id }, this.document.tags)
+          const { data: document } = await Document.create(data)
+          await Document.Tag.update(document.id, this.document.tags)
         } else { // existed document
           await Promise.all([
-            Document.update({ documentId: this.documentId }, data),
-            Document.Tag.update({ documentId: this.documentId }, this.document.tags),
+            Document.update(this.documentId, data),
+            Document.Tag.update(this.documentId, this.document.tags),
           ])
         }
 

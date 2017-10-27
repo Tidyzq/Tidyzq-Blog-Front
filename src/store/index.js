@@ -6,20 +6,22 @@ import * as mutations from './mutations'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
-    accessToken: null,
-    currentUser: {},
-    settings: {
-      title: '',
-      description: '',
-      logo: '',
-      cover: '',
-      postPerPage: 0,
-      navigation: [],
+export function createStore () {
+  return new Vuex.Store({
+    state: {
+      accessToken: null,
+      currentUser: {},
+      settings: {
+        title: '',
+        description: '',
+        logo: '',
+        cover: '',
+        postPerPage: 0,
+        navigation: [],
+      },
     },
-  },
-  mutations,
-  actions,
-  getters,
-})
+    mutations,
+    actions,
+    getters,
+  })
+}

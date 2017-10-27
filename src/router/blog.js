@@ -4,15 +4,17 @@ import Hello from '@/components/Hello'
 
 Vue.use(Router)
 
-export default new Router({
-  mode: 'history',
-  base: '/blog',
-  routes: [
-    {
-      path: '/',
-      name: 'Hello',
-      component: Hello,
-    },
-    { path: '*', redirect: '/' },
-  ],
-})
+export function createRouter () {
+  return new Router({
+    mode: 'history',
+    base: '/blog',
+    routes: [
+      {
+        path: '/',
+        name: 'Hello',
+        component: Hello,
+      },
+      { path: '*', redirect: '/' },
+    ],
+  })
+}

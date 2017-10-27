@@ -73,32 +73,44 @@ var webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
-  ]
-})
-
-Object.keys(config.build.entries).forEach(function (chunk) {
-  var chunkConfig = config.build.entries[chunk]
-  webpackConfig.plugins.push(
-    // generate dist index.html with correct asset hash for caching.
-    // you can customize output by editing /index.html
-    // see https://github.com/ampedandwired/html-webpack-plugin
+    ]),
     new HtmlWebpackPlugin({
-      filename: chunkConfig.filename || (chunk + '.html'),
-      template: chunkConfig.template,
+      filename: 'blog.html',
+      template: resolve('src/templates/blog.template.html'),
       inject: true,
-      chunks: [ 'manifest', 'vendor', 'common', chunk ],
+      chunks: [ 'manifest', 'vendor', 'common', 'blog' ],
       minify: {
         removeComments: true,
         collapseWhitespace: true,
-        removeAttributeQuotes: true
-        // more options:
-        // https://github.com/kangax/html-minifier#options-quick-reference
+        removeAttributeQuotes: true,
       },
-      // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
-    })
-  )
+      chunksSortMode: 'dependency',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'login.html',
+      template: resolve('src/templates/login.template.html'),
+      inject: true,
+      chunks: [ 'manifest', 'vendor', 'common', 'login' ],
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+      },
+      chunksSortMode: 'dependency',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'console.html',
+      template: resolve('src/templates/console.template.html'),
+      inject: true,
+      chunks: [ 'manifest', 'vendor', 'common', 'console' ],
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+      },
+      chunksSortMode: 'dependency',
+    }),
+  ]
 })
 
 if (config.build.productionGzip) {

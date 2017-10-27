@@ -47,8 +47,8 @@ export default {
     async fetchData () {
       this.loading = true
       try {
-        const { body: document } = await Document.get({ documentId: this.documentId })
-        const { body: author } = await User.get({ userId: document.author })
+        const { data: document } = await Document.getById(this.documentId)
+        const { data: author } = await User.getById(document.author)
         document.author = author
         this.document = document
       } catch (e) {
