@@ -66,6 +66,7 @@
     "vue": "^2.5.1",
     "vue-loader": "^13.3.0",
     "vue-router": "^3.0.1",
+    "vue-server-renderer": "^2.5.2",
     "vue-style-loader": "^3.0.3",
     "vue-template-compiler": "^2.5.1",
     "vuedraggable": "^2.14.1",
@@ -75,6 +76,7 @@
     "webpack-dev-middleware": "^1.12.0",
     "webpack-hot-middleware": "^2.19.1",
     "webpack-merge": "^4.1.0",
+    "webpack-node-externals": "^1.6.0",
     "xml2js": "^0.4.19"
   },
   "engines": {

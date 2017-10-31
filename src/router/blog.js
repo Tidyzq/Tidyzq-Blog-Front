@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
 
 Vue.use(Router)
 
@@ -11,8 +10,12 @@ export function createRouter () {
     routes: [
       {
         path: '/',
-        name: 'Hello',
-        component: Hello,
+        name: 'Posts',
+        component: () => import('@/views/Blog/Posts'),
+      }, {
+        path: '/post/:url',
+        name: 'PostDetail',
+        component: () => import('@/views/Blog/PostDetail'),
       },
       { path: '*', redirect: '/' },
     ],

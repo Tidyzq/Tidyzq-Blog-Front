@@ -1,13 +1,13 @@
-import Axios from 'axios'
+import request from './request'
 import AuthorizationEvent from '../event-buses/Authorization'
 
 let authInterceptor = null
 
 export function bindAuthorization (getter) {
   if (authInterceptor) {
-    Axios.interceptors.request.reject(authInterceptor)
+    request.interceptors.request.reject(authInterceptor)
   }
-  authInterceptor = Axios.interceptors.request.use(config => {
+  authInterceptor = request.interceptors.request.use(config => {
     if (typeof config.headers.Authorization === 'undefined') {
       config.headers.Authorization = getter()
     }
@@ -15,7 +15,7 @@ export function bindAuthorization (getter) {
   })
 }
 
-Axios.interceptors.response.use(null, error => {
+request.interceptors.response.use(null, error => {
   if (error.response.status === 401) {
     AuthorizationEvent.$emit('failed')
   }
@@ -23,7 +23,7 @@ Axios.interceptors.response.use(null, error => {
 })
 
 // solve total count
-Axios.interceptors.response.use(response => {
+request.interceptors.response.use(response => {
   const totalCount = response.headers['x-total-count']
   if (typeof totalCount === 'string') {
     response.totalCount = parseInt(totalCount)
@@ -32,63 +32,63 @@ Axios.interceptors.response.use(response => {
 })
 
 export const Auth = {
-  login: body => Axios.post('/api/auth/login', body),
-  checkLogin: () => Axios.get('/api/auth/check-login'),
+  login: body => request.post('/api/auth/login', body),
+  checkLogin: () => request.get('/api/auth/check-login'),
 }
 
 export const User = {
-  getAll: () => Axios.get('/api/users'),
-  getById: id => Axios.get(`/api/users/${id}`),
-  changePassword: (id, body) => Axios.put(`/api/users/${id}/password`, body),
+  getAll: () => request.get('/api/users'),
+  getById: id => request.get(`/api/users/${id}`),
+  changePassword: (id, body) => request.put(`/api/users/${id}/password`, body),
   Post: {
-    getAll: id => Axios.get(`/api/users/${id}/posts`),
+    getAll: id => request.get(`/api/users/${id}/posts`),
   },
 }
 
 export const Document = {
-  getAll: () => Axios.get('/api/documents'),
-  create: body => Axios.post('/api/documents', body),
-  getById: id => Axios.get(`/api/documents/${id}`),
-  update: (id, body) => Axios.put(`/api/documents/${id}`, body),
-  delete: id => Axios.delete(`/api/documents/${id}`),
+  getAll: () => request.get('/api/documents'),
+  create: body => request.post('/api/documents', body),
+  getById: id => request.get(`/api/documents/${id}`),
+  update: (id, body) => request.put(`/api/documents/${id}`, body),
+  delete: id => request.delete(`/api/documents/${id}`),
   Tag: {
-    getAll: documentId => Axios.get(`/api/documents/${documentId}/tags`),
-    link: (documentId, body) => Axios.post(`/api/documents/${documentId}/tags`, body),
-    update: (documentId, body) => Axios.put(`/api/documents/${documentId}/tags`, body),
-    delete: (documentId, tagId) => Axios.delete(`/api/documents/${documentId}/tags/${tagId}`),
+    getAll: documentId => request.get(`/api/documents/${documentId}/tags`),
+    link: (documentId, body) => request.post(`/api/documents/${documentId}/tags`, body),
+    update: (documentId, body) => request.put(`/api/documents/${documentId}/tags`, body),
+    delete: (documentId, tagId) => request.delete(`/api/documents/${documentId}/tags/${tagId}`),
   },
 }
 
 export const Tag = {
-  getAll: () => Axios.get('/api/tags'),
-  create: body => Axios.post('/api/tags', body),
-  getById: id => Axios.get(`/api/tags/id/${id}`),
-  updateById: (id, body) => Axios.put(`/api/tags/id/${id}`, body),
-  deleteById: id => Axios.delete(`/api/tags/id/${id}`),
-  getByUrl: id => Axios.get(`/api/tags/url/${id}`),
+  getAll: () => request.get('/api/tags'),
+  create: body => request.post('/api/tags', body),
+  getById: id => request.get(`/api/tags/id/${id}`),
+  updateById: (id, body) => request.put(`/api/tags/id/${id}`, body),
+  deleteById: id => request.delete(`/api/tags/id/${id}`),
+  getByUrl: id => request.get(`/api/tags/url/${id}`),
   Document: {
-    getAll: id => Axios.get(`/api/tags/id/${id}/documents`),
+    getAll: id => request.get(`/api/tags/id/${id}/documents`),
   },
   Post: {
-    getAll: url => Axios.get(`/api/tags/url/${url}/documents`),
+    getAll: url => request.get(`/api/tags/url/${url}/documents`),
   },
 }
 
 export const Post = {
-  getAll: () => Axios.get('/api/posts'),
-  getByUrl: url => Axios.get(`/api/posts/${url}`),
+  getAll: ({ limit, offset }) => request.get('/api/posts', { params: { limit, offset } }),
+  getByUrl: url => request.get(`/api/posts/${url}`),
   Tag: {
-    getAll: url => Axios.get(`/api/posts/${url}/tags`),
+    getAll: url => request.get(`/api/posts/${url}/tags`),
   },
 }
 
 export const Page = {
-  getByUrl: url => Axios.get(`/api/pages/${url}`),
+  getByUrl: url => request.get(`/api/pages/${url}`),
 }
 
 export const Setting = {
-  get: () => Axios.get('/api/settings'),
-  update: body => Axios.put('/api/settings', body),
+  get: () => request.get('/api/settings'),
+  update: body => request.put('/api/settings', body),
 }
 
 export { default as Cos } from './cos'

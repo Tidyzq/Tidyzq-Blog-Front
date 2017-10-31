@@ -1,9 +1,9 @@
-import Axios from 'axios'
+import request from './request'
 import config from '../config'
 import { xml2js } from '../utils/xml'
 
 export const Token = {
-  get: (method, key) => Axios.get('/api/cos/token', { params: { method, key } }),
+  get: (method, key) => request.get('/api/cos/token', { params: { method, key } }),
 }
 
 async function getAuthorization (method, key) {
@@ -19,7 +19,7 @@ export default {
   Token,
   async get () {
     const token = await getAuthorization('get', '')
-    const { data } = await Axios.get(url, { headers: { Authorization: token } })
+    const { data } = await request.get(url, { headers: { Authorization: token } })
     const { ListBucketResult: result } = await xml2js(data)
     return result
   },
@@ -30,12 +30,12 @@ export default {
       key = (file || {}).name
     }
     const token = await getAuthorization('put', key)
-    await Axios.put(`${url}/${key}`, file, { headers: { Authorization: token, 'Content-Type': file.type }, onUploadProgress: progress })
+    await request.put(`${url}/${key}`, file, { headers: { Authorization: token, 'Content-Type': file.type }, onUploadProgress: progress })
     return `${config.cos.cdnUrl}/${key}`
   },
   async delete (key) {
     const token = await getAuthorization('delete', key)
-    await Axios.delete(`${url}/${key}`, { headers: { Authorization: token }})
+    await request.delete(`${url}/${key}`, { headers: { Authorization: token }})
     return `${config.cos.cdnUrl}/${key}`
   },
 }

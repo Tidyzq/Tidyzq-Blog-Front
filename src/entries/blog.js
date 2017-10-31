@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import Blog from '../views/Blog'
 import { createRouter } from '../router/blog'
+import { createStore } from '../store/blog'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
@@ -13,9 +14,11 @@ Vue.use(ElementUI)
 
 export function createApp () {
   const router = createRouter()
+  const store = createStore()
   const app = new Vue({
     router,
+    store,
     render: h => h(Blog),
   })
-  return { app, router }
+  return { app, router, store }
 }
