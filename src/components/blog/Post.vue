@@ -2,16 +2,16 @@
   article.post
     .post__meta
       .post__tags
-        tag(v-for='tag in post.tags' key='tag.id' :tag='tag')
+        tag.post__tag(v-for='tag in post.tags' key='tag.id' :tag='tag')
       time.post__date {{ createdAtFormated }}
-    router-link.post__title(:to=`{ name: 'PostDetail', params: { url: post.url } }`) {{ post.title }}
-
-    .post__author {{ post.author }}
-    //- router-link(:to=`{ name: 'PostDetail', params: { url: post.url } }`) {{ post.title }}
+    //- router-link.post__title(:to=`{ name: 'PostDetail', params: { url: post.url } }`) {{ post.title }}
+    a.post__title(:href='`/blog/post/${post.url}`') {{ post.title }}
+    p.post__abstract {{ post.abstract }}
+    user.post__author(:user='post.author')
 </template>
 
 <script>
-import Moment from 'moment'
+import User from './User'
 import Tag from './Tag'
 
 export default {
@@ -21,10 +21,11 @@ export default {
   },
   components: {
     Tag,
+    User,
   },
   computed: {
     createdAtFormated () {
-      return Moment(this.post.createdAt).format('YYYY/MM/DD')
+      return (this.post && this.post.createdAtFormated) || ''
     },
   },
 }

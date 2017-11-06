@@ -19,4 +19,26 @@ const Markdown = MarkdownIt({
 
 Markdown.use(KatexPlugin, Katex)
 
-export default Markdown
+export function parse (src, env = {}) {
+  return Markdown.parse(src, env)
+}
+
+export function render (ast, env = {}) {
+  return Markdown.renderer.render(ast, Markdown.options, env)
+}
+
+export function renderText (ast, env = {}) {
+  let result = ''
+  const { limit = 0 } = env
+  for (let i = 0, len = ast.length; i < len; i++) {
+    const token = ast[i]
+    if (token.children) {
+      result += renderText(token.children, { limit: limit ? limit - result.length : 0 })
+    } else {
+      result += token.content
+    }
+    if (limit && result.length >= limit) { break }
+    if (!result.endsWith(' ')) { result += ' ' }
+  }
+  return result
+}

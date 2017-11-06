@@ -1,66 +1,74 @@
 require('./check-versions')()
 
-var config = require('../config')
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
-}
+const config = require('../config')
 
-var path = require('path')
-var express = require('express')
-var proxyMiddleware = require('http-proxy-middleware')
-var webpackConfig = require('./webpack.dev.conf')
+process.env.NODE_ENV = 'production'
+
+const fs = require('fs')
+const path = require('path')
+const express = require('express')
+const proxyMiddleware = require('http-proxy-middleware')
+const { createBundleRenderer } = require('vue-server-renderer')
 
 // default port where dev server listens for incoming traffic
-var port = process.env.PORT || config.dev.port
+const port = process.env.PORT || config.publish.port
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
-var proxyTable = config.dev.proxyTable || {}
-var routerTable = config.dev.routerTable || {}
+const proxyTable = config.dev.proxyTable || {}
 
-var app = express()
+const app = express()
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
-  var options = proxyTable[context]
+  let options = proxyTable[context]
   if (typeof options === 'string') {
     options = { target: options }
   }
   app.use(proxyMiddleware(options.filter || context, options))
 })
 
-var router = express.Router()
-Object.keys(routerTable).forEach(function (routerPath) {
-  var options = routerTable[routerPath]
-  if (options.sendFile) {
-    console.log(routerPath + ' -> sendFile("' + options.sendFile + '")');
-    var filename = path.resolve(__dirname, '../dist', options.sendFile);
-    router.get(routerPath, function (req, res, next) {
-      res.sendFile(filename);
-    });
-  } else if (options.redirect) {
-    console.log(routerPath + ' -> redirect("' + options.redirect + '")');
-    router.get(routerPath, function (req, res, next) {
-      res.redirect(options.redirect);
-    });
-  }
-})
-app.use(router)
-
 app.use(express.static('./dist'))
 
-var uri = 'http://localhost:' + port
+function staticPath (filePath) {
+  return path.resolve(__dirname, '../dist', filePath)
+}
 
-var _resolve
-var readyPromise = new Promise(resolve => {
+const blogRenderer = createBundleRenderer(require(staticPath('vue-ssr-server-bundle.json')), {
+  template: fs.readFileSync(staticPath('blog.template.html'), 'utf-8'),
+  clientManifest: require(staticPath('vue-ssr-client-manifest.json')),
+})
+
+const router = express.Router()
+
+router.get(/^\/blog(\/.*)?$/, (req, res, next) => {
+  const url = req.url.replace(/^\/blog\/?/, '/')
+  blogRenderer.renderToString({ url }, (err, html) => {
+    if (err) { return next(err) }
+    res.end(html)
+  })
+})
+
+router.get('/console/login', (req, res) => res.sendFile(staticPath('login.html')))
+
+router.get(/^\/console(\/.*)?$/, (req, res) => res.sendFile(staticPath('console.html')))
+
+router.get('/', (req, res) => res.redirect('/blog'))
+
+app.use(router)
+
+const uri = 'http://localhost:' + port
+
+let _resolve
+const readyPromise = new Promise(resolve => {
   _resolve = resolve
 })
 
 console.log('> Starting prod server...')
 
-var server = app.listen(port, function (err) {
+const server = app.listen(port, function (err) {
   if (err) {
-    console.error(err);
-    return;
+    console.error(err)
+    return
   }
   console.log('> Listening at ' + uri + '\n')
   _resolve()
@@ -70,5 +78,5 @@ module.exports = {
   ready: readyPromise,
   close: () => {
     server.close()
-  }
+  },
 }

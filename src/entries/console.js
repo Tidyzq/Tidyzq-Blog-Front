@@ -11,6 +11,7 @@ import 'font-awesome/css/font-awesome.css'
 
 import Confirm from '../components/Confirm.js'
 import Error from '../components/Error.js'
+import { bindAuthorization } from '../apis'
 
 Vue.config.productionTip = false
 
@@ -20,13 +21,14 @@ Vue.use(Portal)
 Vue.prototype.$confirm = Confirm
 Vue.prototype.$error = Error
 
-export function createApp () {
-  const router = createRouter()
-  const store = createStore()
-  const app = new Vue({
-    router,
-    store,
-    render: h => h(Console),
-  })
-  return { app, router, store }
-}
+bindAuthorization(() => `JWT ${store.state.accessToken}`)
+
+const router = createRouter()
+const store = createStore()
+const app = new Vue({
+  router,
+  store,
+  render: h => h(Console),
+})
+
+app.$mount('#app')

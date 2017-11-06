@@ -1,29 +1,33 @@
 <template lang='pug'>
   .post-detail
+    navbar.post__navbar
     .post-header
       h1.post-header__title {{ title }}
       time.post-header__date {{ createdAtFormated }}
-    MarkdownView.post-body(v-model='markdownBody')
+    MarkdownView.post-body(v-model='htmlBody')
 </template>
 
 <script>
-import Moment from 'moment'
 import { mapGetters } from 'vuex'
-import { Post } from '../../apis'
 
-import MarkdownView from '@/components/MarkdownView'
+import MarkdownView from '@/components/blog/MarkdownView'
+import Navbar from '@/components/blog/Navbar'
+import HeadMixin from '../../mixins/head'
 
 export default {
+  mixins: [
+    HeadMixin,
+  ],
   components: {
+    Navbar,
     MarkdownView,
   },
-  async asyncData ({ store, route }) {
-    if (!store.state.settings) {
-      await store.dispatch('fetchSettings')
-    }
-    const { data: post } = await Post.getByUrl(route.params.url)
-    post.createdAtFormated = Moment(post.createdAt).format('YYYY/MM/DD HH:mm:ss')
-    store.commit('UPDATE_DATA', post)
+  asyncData ({ store, route }) {
+    const url = route.params.url
+    return store.dispatch('fetchPost', url)
+  },
+  title () {
+    return this.title
   },
   computed: {
     ...mapGetters([
@@ -31,16 +35,17 @@ export default {
       'data',
     ]),
     title () {
-      return (this.data && this.data.title) || ''
+      return this.data.title || ''
     },
     createdAtFormated () {
-      return (this.data && this.data.createdAtFormated) || ''
+      return this.data.createdAtFormated || ''
     },
-    markdownBody () {
-      return (this.data && this.data.markdown) || ''
+    htmlBody () {
+      return this.data.html || ''
     },
   },
 }
+
 </script>
 
 <style>
@@ -59,6 +64,11 @@ export default {
 .post-header__date {
   line-height: 2.2rem;
   color: #9eabb3;
+}
+
+.post-header, .post-body {
+  margin: auto;
+  max-width: 60rem;
 }
 
 </style>

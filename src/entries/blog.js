@@ -5,12 +5,9 @@ import Blog from '../views/Blog'
 import { createRouter } from '../router/blog'
 import { createStore } from '../store/blog'
 
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-default/index.css'
+import 'font-awesome/css/font-awesome.css'
 
 Vue.config.productionTip = false
-
-Vue.use(ElementUI)
 
 export function createApp () {
   const router = createRouter()

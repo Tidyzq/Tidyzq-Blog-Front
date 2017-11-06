@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import * as Markdown from '@/utils/markdown'
 import ScrollMixin from '@/mixins/scroll'
 
 export default {
@@ -16,7 +15,7 @@ export default {
   },
   computed: {
     html () {
-      return Markdown.render(Markdown.parse(this.value || ''))
+      return this.value
     },
     _scroll: {
       get () {

@@ -17,9 +17,8 @@ function resolve (dir) {
 
 const webpackConfig = {
   entry: {
-    blog: (isProduction ? [] : [ './build/dev-client' ]).concat([ resolve('src/entries/blog.front.js') ]),
-    login: (isProduction ? [] : [ './build/dev-client' ]).concat([ resolve('src/entries/login.front.js') ]),
-    console: (isProduction ? [] : [ './build/dev-client' ]).concat([ resolve('src/entries/console.front.js') ]),
+    login: (isProduction ? [] : [ './build/dev-client?console=true' ]).concat([ resolve('src/entries/login.js') ]),
+    console: (isProduction ? [] : [ './build/dev-client?console=true' ]).concat([ resolve('src/entries/console.js') ]),
   },
   output: {
     path: config.build.assetsRoot,
@@ -82,19 +81,7 @@ const webpackConfig = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      'process.env.VUE_ENV': JSON.stringify('front'),
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'blog.html',
-      template: resolve('src/templates/blog.template.html'),
-      inject: true,
-      chunks: isProduction ? [ 'manifest', 'vendor', 'common', 'blog' ] : [ 'common', 'blog' ],
-      minify: isProduction ? {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true,
-      } : undefined,
-      chunksSortMode: isProduction ? 'dependency' : undefined,
+      'process.env.VUE_ENV': JSON.stringify('client'),
     }),
     new HtmlWebpackPlugin({
       filename: 'console.html',
@@ -109,10 +96,10 @@ const webpackConfig = {
       chunksSortMode: isProduction ? 'dependency' : undefined,
     }),
     new HtmlWebpackPlugin({
-      filename: 'blog.html',
-      template: resolve('src/templates/blog.template.html'),
+      filename: 'login.html',
+      template: resolve('src/templates/login.template.html'),
       inject: true,
-      chunks: isProduction ? [ 'manifest', 'vendor', 'common', 'blog' ] : [ 'common', 'blog' ],
+      chunks: isProduction ? [ 'manifest', 'vendor', 'common', 'login' ] : [ 'common', 'login' ],
       minify: isProduction ? {
         removeComments: true,
         collapseWhitespace: true,
@@ -171,6 +158,12 @@ if (isProduction) {
       },
     ]),
   )
+  if (config.build.bundleAnalyzerReport) {
+    const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+    webpackConfig.plugins.push(new BundleAnalyzerPlugin({
+      analyzerPort: 8883,
+    }))
+  }
 } else {
   webpackConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin(),

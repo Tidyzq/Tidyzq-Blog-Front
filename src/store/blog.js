@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { Setting } from '@/apis'
 
 Vue.use(Vuex)
 
 export function createStore () {
-  let fetchingSettings = null
+  const actions = require('./blog-actions.common').default
+
+  if (process.env.VUE_ENV === 'server') {
+    Object.assign(actions, require('./blog-actions.server').createActions())
+  }
 
   return new Vuex.Store({
     state: {
@@ -20,18 +23,7 @@ export function createStore () {
       //   navigation: [],
       // },
     },
-    actions: {
-      fetchSettings ({ commit }) {
-        if (!fetchingSettings) {
-          fetchingSettings = Setting.get()
-            .then(({ data: settings }) => {
-              fetchingSettings = null
-              commit('UPDATE_SETTINGS', settings)
-            })
-        }
-        return fetchingSettings
-      },
-    },
+    actions,
     mutations: {
       UPDATE_DATA (state, data) {
         state.data = data

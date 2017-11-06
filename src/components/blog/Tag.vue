@@ -1,5 +1,6 @@
 <template lang='pug'>
-  router-link.tag(:to=`{ name: 'TagDetail', params: { url: tag.url } }`) {{ tag.name }}
+  //- router-link.tag(:to=`{ name: 'TagDetail', params: { url: tag.url } }`) {{ tag.name }}
+  a.tag(:href='`/blog/tag/${tag.url}`') {{ tag.name }}
 </template>
 
 <script>
