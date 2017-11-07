@@ -32,12 +32,15 @@ export default {
 </script>
 
 <style>
+.post__meta {
+  overflow: hidden;
+}
+
 .post__tags {
   display: inline;
 }
 
 .post__date {
-  display: inline;
   float: right;
   line-height: 1.6rem;
   color: #b5b5b5;
@@ -47,7 +50,7 @@ export default {
   display: block;
   font-size: 3rem;
   font-weight: bold;
-  color: #34495e;
+  color: #373737;
   margin: 2.5rem 0;
   text-decoration: none;
   transition: all .3s ease;
@@ -55,6 +58,12 @@ export default {
 
 .post__title:hover {
   color: #5e5e5e;
+}
+
+.post__abstract {
+  line-height: 1.4rem;
+  color: #62646c;
+  margin: 2rem 0;
 }
 </style>
 

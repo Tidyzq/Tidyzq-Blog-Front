@@ -1,3 +1,5 @@
+import { now, easeInOut } from '../utils/utils'
+
 export default {
   computed: {
     _scroll () {},
@@ -18,48 +20,27 @@ export default {
             this._scroll = this.getRealScroll()
           }, delay)
         }
-        // const wrapper = () => {
-        //   const delay = 250, now = Date.now()
-        //   if (!this._throttleScroll || this._throttleScroll + delay <= now) {
-        //     this._throttleScroll = now
-        //     this._scroll = this.getRealScroll()
-        //     setTimeout(() => {
-        //       this._throttleScroll = null
-        //       if (this._throttledScroll) {
-        //         this._throttledScroll = false
-        //         wrapper()
-        //       }
-        //     }, delay)
-        //   } else {
-        //     this._throttledScroll = true
-        //   }
-        // }
-        // wrapper()
       }
     },
-    scrollTo (val) {
-      const realScroll = this.getRealScroll()
-      if (realScroll !== this._scroll) {
-        const delay = 250, preTick = 10
-        const difference = val - realScroll
-        const callTimes = delay / preTick
-        if (this._smoothScroll) {
-          clearTimeout(this._smoothScroll)
+    scrollTo (destScroll, duration = 250) {
+      const startScroll = this.getRealScroll()
+      if (startScroll !== this._scroll) {
+        const difference = destScroll - startScroll
+        const startTime = now()
+        const step = () => {
+          const time = now()
+          let elapsed = (time - startTime) / duration
+          elapsed = elapsed > 1 ? 1 : elapsed
+
+          const scrollValue = startScroll + difference * easeInOut(elapsed)
+          this._scrolling = true
+          this.setRealScroll(scrollValue)
+
+          if (elapsed < 1) {
+            window.requestAnimationFrame(step)
+          }
         }
-        const cbs = []
-        for (let i = 0; i < callTimes; ++i) {
-          (i => {
-            cbs.push(() => {
-              this._smoothScroll = setTimeout(() => {
-                this._scrolling = true
-                this.setRealScroll(realScroll + difference * (i + 1) / callTimes)
-                cbs[ i + 1 ]()
-              }, preTick)
-            })
-          })(i)
-        }
-        cbs.push(() => {})
-        cbs[0]()
+        window.requestAnimationFrame(step)
       }
     },
   },

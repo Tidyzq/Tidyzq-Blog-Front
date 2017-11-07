@@ -75,7 +75,13 @@ export const Tag = {
 }
 
 export const Post = {
-  getAll: ({ limit, offset }) => request.get('/api/posts', { params: { limit, offset } }),
+  getAll: ({ limit, offset, sort }) => {
+    const params = { limit, offset }
+    for (const key of Object.keys(sort)) {
+      params[`sort[${key}]`] = sort[key]
+    }
+    return request.get('/api/posts', { params })
+  },
   getByUrl: url => request.get(`/api/posts/${url}`),
   Tag: {
     getAll: url => request.get(`/api/posts/${url}/tags`),

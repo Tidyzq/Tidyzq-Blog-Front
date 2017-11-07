@@ -38,7 +38,9 @@ export default {
   width: 100%;
   height: 4rem;
   &--default {
-    background: #f0f6f6;
+    & .navbar__container {
+      background: #f0f6f6;
+    }
     & .navbar__brand {
       color: #4b4b4b;
     }
@@ -51,7 +53,9 @@ export default {
     }
   }
   &--dark {
-    background: #2a303c;
+    & .navbar__container {
+      background: #2a303c;
+    }
     & .navbar__brand {
       color: #fff;
     }

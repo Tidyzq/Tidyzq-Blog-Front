@@ -1,6 +1,6 @@
 <template lang='pug'>
-  //- router-link.tag(:to=`{ name: 'TagDetail', params: { url: tag.url } }`) {{ tag.name }}
-  a.tag(:href='`/blog/tag/${tag.url}`') {{ tag.name }}
+  //- a.tag(:href='`/blog/tag/${tag.url}`') {{ tag.name }}
+  .tag {{ tag.name }}
 </template>
 
 <script>
@@ -16,10 +16,9 @@ export default {
 .tag {
   display: inline-block;
   line-height: 1rem;
-  padding: 0.3rem;
+  padding: 0.5rem;
   color: #fff;
   border-radius: 4px;
-  text-transform: uppercase;
   background: #0085c3;
   text-decoration: none;
 }

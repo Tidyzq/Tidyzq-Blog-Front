@@ -30,7 +30,8 @@ export function createActions () {
         await dispatch('fetchSettings')
       }
       const postPerPage = state.settings.postPerPage || 5
-      const { data: posts, totalCount } = await Post.getAll({ limit: postPerPage, offset: index * postPerPage })
+      const { data: posts, totalCount } = await Post.getAll({ limit: postPerPage, offset: index * postPerPage, sort: { createdAt: 'desc' } })
+      const pageCount = Math.ceil(totalCount / postPerPage)
       // fetch tags and author info
       await Promise.all(posts.map(async post => {
         const [ tags, author, createdAtFormated, abstract ] = await Promise.all([
@@ -41,7 +42,7 @@ export function createActions () {
         ])
         Object.assign(post, { tags, author, createdAtFormated, abstract })
       }))
-      commit('UPDATE_DATA', { index, totalCount, posts })
+      commit('UPDATE_DATA', { index, totalCount, pageCount, posts })
     },
     async fetchPost ({ state, commit, dispatch }, url) {
       if (!state.settings) {

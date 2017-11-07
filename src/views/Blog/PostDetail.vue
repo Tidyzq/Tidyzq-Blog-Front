@@ -49,7 +49,13 @@ export default {
 </script>
 
 <style>
+.post-header, .post-body {
+  margin: auto;
+  max-width: 60rem;
+}
+
 .post-header {
+  margin: 2rem auto;
   padding: 0 1rem;
   overflow: hidden;
 }
@@ -65,10 +71,4 @@ export default {
   line-height: 2.2rem;
   color: #9eabb3;
 }
-
-.post-header, .post-body {
-  margin: auto;
-  max-width: 60rem;
-}
-
 </style>

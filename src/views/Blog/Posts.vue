@@ -1,6 +1,9 @@
 <template lang='pug'>
   .posts(ref='container')
-    .posts__header
+    .posts__header(:class=`{
+        'posts__header--simplify': simplifyCover,
+      }`
+      )
       navbar.posts__navbar(type='dark')
       .posts__cover(:style=`{
         'background-image': 'url(' + settings.cover + ')',
@@ -8,11 +11,15 @@
         .posts__header-content
           .posts__title {{ settings.title }}
           .posts__description {{ settings.description }}
-        .posts__scroll-down(@click='onScrollDown')
+        .posts__scroll-down(v-if='!simplifyCover' @click='onScrollDown')
           i.fa.fa-4x.fa-angle-down
-    .posts__body(ref='content')
+        //- a.posts__scroll-down(v-if='!simplifyCover' href='#content')
+    #content.posts__body(ref='content')
       .posts__posts-list
-        post.posts__item(v-for='post in data.posts' key='post.id', :post='post')
+        .posts__item-container(v-for='post in data.posts' key='post.id')
+          post.posts__item(:post='post')
+      .posts__pagination
+        pagination(:current='index' :total='data.pageCount')
       //- pagination
     .posts__footer
 </template>
@@ -22,6 +29,7 @@ import { mapGetters } from 'vuex'
 
 import Navbar from '@/components/blog/Navbar'
 import Post from '@/components/blog/Post'
+import Pagination from '@/components/blog/Pagination'
 
 import ScrollMixin from '@/mixins/scroll'
 
@@ -29,6 +37,7 @@ export default {
   components: {
     Post,
     Navbar,
+    Pagination,
   },
   mixins: [
     ScrollMixin,
@@ -45,6 +54,12 @@ export default {
     index () {
       return parseInt(this.$route.query.page) || 0
     },
+    simplifyCover () {
+      return this.index !== 0
+    },
+  },
+  mounted () {
+    window.myScrollTo = this.scrollTo
   },
   methods: {
     /**
@@ -68,7 +83,7 @@ export default {
     onScrollDown () {
       const contentOffset = this.getOffsetTop(this.$refs.content)
       const maxOffset = document.body.clientHeight - window.innerHeight
-      this.scrollTo(Math.min(contentOffset, maxOffset))
+      this.scrollTo(Math.min(contentOffset, maxOffset), 500)
     },
   },
 }
@@ -85,6 +100,10 @@ export default {
   flex-direction: column;
 }
 
+.posts__header--simplify {
+  height: 40vh;
+}
+
 .posts__navbar {
   flex: none;
 }
@@ -96,6 +115,7 @@ export default {
   background-size: cover;
   overflow: hidden;
 }
+
 
 .posts__header-content {
   position: absolute;
@@ -144,13 +164,19 @@ export default {
   overflow: hidden;
 }
 
-.posts__posts-list {
-  max-width: 60rem;
-  margin: auto;
+.posts__posts-list > *:nth-child(even) {
+  background: #f9f9f9;
 }
 
 .posts__item {
-  margin-top: 4rem;
+  max-width: 60rem;
+  margin: auto;
+  padding: 2rem 0;
+}
+
+.posts__pagination {
+  max-width: 60rem;
+  margin: auto;
 }
 
 </style>
