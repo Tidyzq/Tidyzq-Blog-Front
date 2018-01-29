@@ -28,7 +28,7 @@ const webpackConfig = {
       : config.dev.assetsPublicPath,
   },
   resolve: {
-    extensions: [ '.js', '.vue', '.json' ],
+    extensions: [ '.js', 'jsx', '.ts', '.tsx', '.vue', '.json' ],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
       '@': resolve('src'),
@@ -49,6 +49,16 @@ const webpackConfig = {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig,
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'tslint-loader',
+        enforce: 'pre',
+        exclude: resolve('node_modules'),
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
