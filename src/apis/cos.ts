@@ -24,27 +24,24 @@ export default {
     return result
   },
   async put (key: string, file: File, progress?: () => void) {
-    let realKey: string = key
-    let realFile: File = file
-    let realProgress: (() => void) | undefined = progress
     if (typeof key !== 'string') {
-      realProgress = (file as any)
-      realFile = key as any
-      realKey = (file || {}).name
+      progress = (file as any)
+      file = key as any
+      key = (file || {}).name
     }
-    const token = await getAuthorization('put', realKey)
+    const token = await getAuthorization('put', key)
     await request.put(
-      `${url}/${realKey}`,
-      realFile,
+      `${url}/${key}`,
+      file,
       {
         headers: {
           Authorization: token,
-          'Content-Type': realFile.type,
+          'Content-Type': file.type,
         },
-        onUploadProgress: realProgress,
+        onUploadProgress: progress,
       },
     )
-    return `${config.cos.cdnUrl}/${realKey}`
+    return `${config.cos.cdnUrl}/${key}`
   },
   async delete (key: string) {
     const token = await getAuthorization('delete', key)

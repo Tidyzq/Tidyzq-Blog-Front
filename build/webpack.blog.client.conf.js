@@ -7,6 +7,7 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const vueLoaderConfig = require('./vue-loader.conf')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -20,11 +21,11 @@ const webpackConfig = {
   },
   output: {
     path: config.build.assetsRoot,
-    filename: isProduction ? utils.assetsPath('js/[name].[chunkhash].client.js') : '[name].client.js',
+    filename: isProduction ? utils.assetsPath('js/blog.[name].[chunkhash].js') : 'blog.[name].js',
     publicPath: process.env.NODE_ENV === 'production'
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath,
-    chunkFilename: isProduction ? utils.assetsPath('js/[id].[chunkhash].client.js') : '[id].client.js',
+    chunkFilename: isProduction ? utils.assetsPath('js/blog.[id].[chunkhash].js') : 'blog.[id].js',
   },
   resolve: {
     extensions: [ '.js', 'jsx', '.ts', '.tsx', '.vue', '.json' ],
@@ -60,8 +61,9 @@ const webpackConfig = {
         loader: 'ts-loader',
       },
       {
-        test: /\.js$/,
+        test: /\.(ts|js)x?$/,
         loader: 'babel-loader',
+        enforce: 'post',
         exclude: resolve('node_modules'),
       },
       {
@@ -117,13 +119,7 @@ const webpackConfig = {
 
 if (isProduction) {
   webpackConfig.plugins.push(
-    // extract css into its own file
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-      },
-      sourceMap: true,
-    }),
+    new UglifyJsPlugin(),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),

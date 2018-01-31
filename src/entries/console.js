@@ -6,7 +6,7 @@ import { createRouter } from '../router/console'
 import { createStore } from '../store/console'
 import ElementUI from 'element-ui'
 import Portal from 'portal-vue'
-import 'element-ui/lib/theme-default/index.css'
+import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.css'
 
 import Confirm from '../components/Confirm.js'

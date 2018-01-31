@@ -1,9 +1,11 @@
 import request from './request'
 import AuthorizationEvent from '../event-buses/Authorization'
 
+// add attribute to axios response
 declare module 'axios' {
+  // tslint:disable:interface-name
   interface AxiosResponse<T = any> {
-    totalCount?: number;
+    totalCount?: number
   }
 }
 
@@ -38,11 +40,11 @@ request.interceptors.response.use(response => {
 })
 
 export class Auth {
-  static login (body: any) {
-    return request.post('/api/auth/login', body);
+  public static login (body: any) {
+    return request.post('/api/auth/login', body)
   }
-  static checkLogin () {
-    return request.get('/api/auth/check-login');
+  public static checkLogin () {
+    return request.get('/api/auth/check-login')
   }
 }
 

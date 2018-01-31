@@ -8,6 +8,7 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -22,9 +23,9 @@ const webpackConfig = {
   },
   output: {
     path: config.build.assetsRoot,
-    filename: isProduction ? utils.assetsPath('js/[name].[chunkhash].js') : '[name].js',
+    filename: isProduction ? utils.assetsPath('js/console.[name].[chunkhash].js') : 'console.[name].js',
     publicPath: isProduction ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
-    chunkFilename: isProduction ? utils.assetsPath('js/[id].[chunkhash].js') : '[id].js',
+    chunkFilename: isProduction ? utils.assetsPath('js/console.[id].[chunkhash].js') : 'console.[id].js',
   },
   resolve: {
     extensions: [ '.js', 'jsx', '.ts', '.tsx', '.vue', '.json' ],
@@ -60,8 +61,9 @@ const webpackConfig = {
         loader: 'ts-loader',
       },
       {
-        test: /\.js$/,
+        test: /\.(ts|js)x?$/,
         loader: 'babel-loader',
+        enforce: 'post',
         exclude: resolve('node_modules'),
       },
       {
@@ -122,12 +124,7 @@ const webpackConfig = {
 
 if (isProduction) {
   webpackConfig.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-      },
-      sourceMap: true,
-    }),
+    new UglifyJsPlugin(),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),
